@@ -1,7 +1,7 @@
 {
-  "name": "extension-skeleton",
+  "name": "Jump & Spoon",
   "version": "0.3.0",
-  "description": "Bare Google Chrome extension skeleton.",
+  "description": "Chrome extension for LiveApp data collection workers. Turns Jump & Spoon form into UI.",
   "engines": {
     "node": "7.0.0",
     "npm": "3.10.8"
