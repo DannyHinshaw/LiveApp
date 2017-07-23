@@ -9,7 +9,7 @@ const config = require('./config.js');
 const pkg = require('../package.json');
 
 const appName = `${pkg.name}-${pkg.version}`;
-
+console.log('pkg::', pkg);
 
 module.exports = _.merge({}, config, {
   output: {
@@ -51,3 +51,4 @@ module.exports = _.merge({}, config, {
     }),
   ]
 });
+console.log('path', module.exports.output.path);
