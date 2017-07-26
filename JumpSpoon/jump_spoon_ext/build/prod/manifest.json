@@ -2,19 +2,20 @@
   "manifest_version": 2,
   "icons": { "128": "images/icon.png" },
   "browser_action": {
-    "default_icon": "images/icon.png",
-    "default_popup": "html/popup.html"
+    "default_icon": "images/icon.png"
+    // EXTENSION MENU
+    // "default_popup": "html/popup.html"
   },
   "background": { "scripts": ["js/background.js"] },
   "content_scripts": [{
     "matches": [ "https://airtable.com/*?prefill_Venue%20ID=*" ],
     "js": [ "js/content.js" ]
   }],
-  "options_page": "html/options.html",
-  "devtools_page": "html/devtools.html",
-  "permissions": [ "<all_urls>" ],
+  // "options_page": "html/options.html",
+  // "devtools_page": "html/devtools.html",
+  "permissions": [ "<all_urls>", "webRequest", "webRequestBlocking", "\u003Call_urls>" ],
   "web_accessible_resources": [ "js/*", "html/*", "css/*", "images/*" ],
-  "content_security_policy": "script-src 'self'; object-src 'self'",
+  //"content_security_policy": "script-src 'self'; object-src 'self'",
   "name": "jump_spoon",
   "version": "0.3.0",
   "description": "Chrome extension for LiveApp data collection &#39;Jump and Spoon&#39; workers."
