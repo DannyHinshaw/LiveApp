@@ -1,7 +1,7 @@
 {
   "name": "jump_spoon",
   "version": "0.3.0",
-  "description": "Chrome extension for LiveApp data collection workers. Turns Jump & Spoon form into UI.",
+  "description": "Chrome extension for LiveApp data collection 'Jump and Spoon' workers.",
   "engines": {
     "node": "7.0.0",
     "npm": "3.10.8"

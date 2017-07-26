@@ -15,6 +15,10 @@ import msg from './modules/msg';
 
 console.log('BACKGROUND SCRIPT WORKS!'); // eslint-disable-line no-console
 
+/*
+
+/******* DEMO FOR MESSENGER *******//*
+
 // adding special background notification handlers onConnect / onDisconnect
 function logEvent(ev, context, tabId) {
   console.log(`${ev}: context = ${context}, tabId = ${tabId}`); // eslint-disable-line no-console
@@ -38,3 +42,20 @@ function helloWorld() {
 
 // start broadcasting loop
 helloWorld();
+*/
+
+const HEADERS_TO_STRIP_LOWERCASE = [
+  'content-security-policy',
+  'x-frame-options',
+];
+
+chrome.webRequest.onHeadersReceived.addListener(
+  function(details) {
+    return {
+      responseHeaders: details.responseHeaders.filter(function(header) {
+        return HEADERS_TO_STRIP_LOWERCASE.indexOf(header.name.toLowerCase()) < 0;
+      })
+    };
+  }, {
+    urls: ["<all_urls>"]
+  }, ["blocking", "responseHeaders"]);
