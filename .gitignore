@@ -91,6 +91,9 @@ build/updates.xml
 .idea/**/gradle.xml
 .idea/**/libraries
 
+# ALL THE FUCKING .idea FILES
+.idea/*
+
 # CMake
 cmake-build-debug/
 
