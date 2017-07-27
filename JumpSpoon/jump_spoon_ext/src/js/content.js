@@ -1,5 +1,5 @@
-import handlers from './modules/handlers';
-import msg from './modules/msg';
+ import handlers from './modules/handlers';
+ import msg from './modules/msg';
 
 // here we use SHARED message handlers, so all the contexts support the same
 // commands. but this is NOT typical messaging system usage, since you usually
@@ -13,139 +13,121 @@ import msg from './modules/msg';
 // `handlers` parameter for good when invoking msg.init()
 
 console.log('CONTENT SCRIPT WORKS!'); // eslint-disable-line no-console
-/******* DEMO FOR MESSENGER *******//*
 
- msg.init('ct', handlers.create('ct'));
- */
+/*
+msg.init('ct', handlers.create('ct'));
 
-(function() {
-  'use strict';
+console.log('jQuery version:', $().jquery); // eslint-disable-line no-console
+*/
 
-  const form = {
 
-    // Custom CSS Styles
-    templates: {
-      iframeContainer: `<div id="iframeContainer"></div>`,
-      instructions: `<div class="toggle-instructions">
+
+const form = {
+
+  // Custom CSS Styles
+  templates: {
+    iframeContainer: `<div id="iframeContainer"></div>`,
+    instructions: `<div class="toggle-instructions">
                       <span class="toggle-icon"> + </span> Click to toggle instructions
                     </div>
                     <br>`,
-      venueIdClipped: `<span style="color: #61ca61; display: block;"><br>Copied to clipboard!</span>`
-    },
+    venueIdClipped: `<span style="color: #61ca61; display: block;"><br>Copied to clipboard!</span>`
+  },
 
-    ajax(url) {
-      GM_xmlhttpRequest({
-        method: 'GET',
-        url: url,
-        synchronous: true,
-        onload(xhr) {
-          const r = xhr.responseText;
-          try{
-            return xhr;
-            // getTextGrunt(r);
-          }
-          catch(err){
-            console.log(err);
-            //console.log(r);
-            return r;
-          }
-        }
-      });
+  /*
+   addCSS(styleSheet) {
+   const style = document.createElement('style');
+   style.type = 'text/css';
+   style.appendChild(document.createTextNode(styleSheet));
+   document.head.appendChild(style);
+   },
+   */
 
-    },
+  clearInstructions() {
+    const formName = document.querySelector('.formName');
+    formName.insertAdjacentHTML("afterend", this.templates.instructions);
+
+    // Remove instruction block and assign toggle function
+    document.querySelector('.formDescription').style.display = 'none';
+    document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
+  },
+
+  toggleInstructions() {
+    const header = document.querySelector('.formHeader');
+    const instructions = document.querySelector('.formDescription');
+    const toggler = document.querySelector('.toggle-instructions');
+    const toggleIcon = toggler.querySelector('.toggle-icon');
+    toggler.classList.toggle('open');
+
+    if (toggler.classList.contains('open')) {
+      header.style.height = '20rem';
+      instructions.style.display = 'block';
+      toggler.style.backgroundColor = '#97ceea';
+      toggleIcon.innerHTML = ' - ';
+    } else {
+      header.style.height = 'initial';
+      instructions.style.display = 'none';
+      toggler.style.backgroundColor = '#97eaa2';
+      toggleIcon.innerHTML = ' + ';
+    }
+  },
+
+  descriptionLimit() {
+
+    // Fixes formatting where descriptions are too long and screw up grid
+    [...document.querySelectorAll('.description')].forEach(d => {
+      return d.textContent.length > 52 ? d.parentElement.style.display = 'block' : null;
+    });
+  },
 
 /*
-    addCSS(styleSheet) {
-      const style = document.createElement('style');
-      style.type = 'text/css';
-      style.appendChild(document.createTextNode(styleSheet));
-      document.head.appendChild(style);
-    },
+  getVenueID() {
+
+    // Currently this input is the first input, may change in the future...
+    // for now this is the easiest way
+    // TODO: Replacement for copy/pasta
+    // GM_setClipboard(document.querySelector('input').value);
+    const venIdDesc = document.querySelectorAll('.description')[1];
+    venIdDesc.innerHTML += this.templates.venueIdClipped;
+  },
 */
 
-    clearInstructions() {
-      const formName = document.querySelector('.formName');
-      formName.insertAdjacentHTML("afterend", this.templates.instructions);
+  setIframe() {
+    const formContainer = document.querySelector('.formFieldAndSubmitContainer');
+    const formHeader = document.querySelector('.formHeader');
 
-      // Remove instruction block and assign toggle function
-      document.querySelector('.formDescription').style.display = 'none';
-      document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
-    },
+    //this.wrapAll(formEls, wrapperDiv);
+    // this.addCSS(this.css.splitView);
+    formContainer.prepend(formHeader);
+    formContainer.insertAdjacentHTML('afterend', this.templates.iframeContainer);
 
-    toggleInstructions() {
-      const header = document.querySelector('.formHeader');
-      const instructions = document.querySelector('.formDescription');
-      const toggler = document.querySelector('.toggle-instructions');
-      const toggleIcon = toggler.querySelector('.toggle-icon');
-      toggler.classList.toggle('open');
+    // const test = this.ajax('https://jsfiddle.net/');
+    // console.log(test);
+    // TODO: This is just a temp placeholder
 
-      if (toggler.classList.contains('open')) {
-        header.style.height = '20rem';
-        instructions.style.display = 'block';
-        toggler.style.backgroundColor = '#97ceea';
-        toggleIcon.innerHTML = ' - ';
-      } else {
-        header.style.height = 'initial';
-        instructions.style.display = 'none';
-        toggler.style.backgroundColor = '#97eaa2';
-        toggleIcon.innerHTML = ' + ';
-      }
-    },
+    const iframe = document.createElement('iframe');
+    iframe.id = 'testIframe';
+    iframe.src = document.querySelectorAll('.detailViewTextWithLinks a')[0].href;// testthis.ajax('http://test.com');// 'https://jsbin.com';
+    document.getElementById('iframeContainer').prepend(iframe);
 
-    descriptionLimit() {
+  },
 
-      // Fixes formatting where descriptions are too long and screw up grid
-      [...document.querySelectorAll('.description')].forEach(d => {
-        return d.textContent.length > 52 ? d.parentElement.style.display = 'block' : null;
-      });
-    },
+  init() {
+    //this.addCSS(this.css.main);
 
-    getVenueID() {
+    // DOM JS Methods need to wait shortly for load
+    setTimeout(() => {
+      this.clearInstructions();
+      this.descriptionLimit();
+      // this.getVenueID();
+      this.setIframe();
+    }, 250);
+  }
 
-      // Currently this input is the first input, may change in the future...
-      // for now this is the easiest way
-      GM_setClipboard(document.querySelector('input').value);
-      const venIdDesc = document.querySelectorAll('.description')[1];
-      venIdDesc.innerHTML += this.templates.venueIdClipped;
-    },
+};
 
-    setIframe() {
-      const formContainer = document.querySelector('.formFieldAndSubmitContainer');
-      const formHeader = document.querySelector('.formHeader');
-
-      //this.wrapAll(formEls, wrapperDiv);
-      this.addCSS(this.css.splitView);
-      formContainer.prepend(formHeader);
-      formContainer.insertAdjacentHTML('afterend', this.templates.iframeContainer);
-
-      // const test = this.ajax('https://jsfiddle.net/');
-      // console.log(test);
-      // TODO: This is just a temp placeholder
-
-      const iframe = document.createElement('iframe');
-      iframe.id = 'testIframe';
-      iframe.srcdoc = 'https://jsfiddle.net';// testthis.ajax('http://test.com');// 'https://jsbin.com';
-      document.getElementById('iframeContainer').prepend(iframe);
-
-    },
-
-    init() {
-      //this.addCSS(this.css.main);
-
-      // DOM JS Methods need to wait shortly for load
-      setTimeout(() => {
-        this.clearInstructions();
-        this.descriptionLimit();
-        this.getVenueID();
-        this.setIframe();
-      }, 250);
-    }
-
-  };
-
-  // Initialize settings
-  console.log('running');
-  const formFactoryFn = () => Object.create(form);
-  const formify = formFactoryFn();
-  formify.init();
-})();
+// Initialize settings
+console.log('running'); // eslint-disable-line no-console
+const formFactoryFn = () => Object.create(form);
+const formify = formFactoryFn();
+formify.init();

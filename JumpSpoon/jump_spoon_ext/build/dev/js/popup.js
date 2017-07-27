@@ -2385,6 +2385,143 @@ __webpack_require__(24)('observable');
 
 /***/ }),
 /* 70 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+// module for manipulating / validating the form shared between options and
+// popup views.  when 'Go!' button is pressed, structured info is passed to
+// provided callback.
+//
+// no unit tests for this module, it is jQuery manipulation mostly.
+//
+
+
+var form = {};
+
+form.init = function (callback) {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(function () {
+    // form logic:
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bcast, #type_cmd, #type_bg').change(function () {
+      var bgSel = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bg').is(':checked');
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx, #tab').prop('disabled', bgSel);
+    });
+
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo, #cmd_random').change(function () {
+      var echoSel = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo').is(':checked');
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo_text').prop('disabled', !echoSel);
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_random_sync, #cmd_random_async').prop('disabled', echoSel);
+    });
+
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_all, #ctx_select').change(function () {
+      var ctxAll = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_all').is(':checked');
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('input[type=checkbox]').prop('disabled', ctxAll);
+    });
+
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_all, #tab_same, #tab_provided').change(function () {
+      var tabProv = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided').is(':checked');
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').prop('disabled', !tabProv);
+    });
+
+    function validateTabId() {
+      var el = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text');
+      if (el.val() === '') {
+        el.val(1);
+      }
+      if (parseInt(el.val(), 10) < 0) {
+        el.val(1);
+      }
+    }
+
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').blur(validateTabId);
+
+    // button logic:
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#submit').click(function () {
+      validateTabId();
+      if (typeof callback === 'function') {
+        var res = {};
+        var typeBcast = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bcast').is(':checked');
+        var typeBg = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bg').is(':checked');
+        var cmdEcho = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo').is(':checked');
+        var cmdEchoText = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo_text').val();
+        var cmdRandomSync = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_random_sync').is(':checked');
+        var ctxAll = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_all').is(':checked');
+        var ctxSelBg = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_bg').is(':checked');
+        var ctxSelCt = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_ct').is(':checked');
+        var ctxSelDt = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_dt').is(':checked');
+        var ctxSelPopup = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_popup').is(':checked');
+        var ctxSelOptions = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_options').is(':checked');
+        var tabAll = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_all').is(':checked');
+        var tabProvided = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided').is(':checked');
+        var tabProvidedVal = parseInt(__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').val(), 10);
+        // command:
+        if (cmdEcho) {
+          res.cmd = 'echo';res.arg = cmdEchoText;
+        } else if (cmdRandomSync) {
+          res.cmd = 'random';
+        } else {
+          res.cmd = 'randomAsync';
+        }
+        // type:
+        if (typeBg) {
+          res.type = 'bg';
+        } else {
+          if (typeBcast) {
+            res.type = 'bcast';
+          } else {
+            res.type = 'cmd';
+          }
+          // contexts:
+          res.ctx_all = ctxAll;
+          if (!ctxAll) {
+            var arr = [];
+            if (ctxSelBg) {
+              arr.push('bg');
+            }
+            if (ctxSelCt) {
+              arr.push('ct');
+            }
+            if (ctxSelDt) {
+              arr.push('dt');
+            }
+            if (ctxSelPopup) {
+              arr.push('popup');
+            }
+            if (ctxSelOptions) {
+              arr.push('options');
+            }
+            res.ctxs = arr;
+          }
+          // tab id:
+          if (tabAll) {
+            res.tab = -1;
+          } else if (tabProvided) {
+            res.tab = tabProvidedVal;
+          } else {
+            res.tab = -2;
+          } // same id
+        }
+        callback(res);
+      }
+      return false; // stop propagation
+    });
+
+    // default values:
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bcast, #cmd_random, #cmd_random_sync, #ctx_all, #tab_all').attr('checked', true);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo_text').val('salsita');
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo_text').prop('disabled', true);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('input[type=checkbox]').prop('checked', true);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('input[type=checkbox]').prop('disabled', true);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').val(1);
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').prop('disabled', true);
+  });
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (form);
+
+/***/ }),
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -12644,143 +12781,6 @@ return jQuery;
 
 
 /***/ }),
-/* 71 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-// module for manipulating / validating the form shared between options and
-// popup views.  when 'Go!' button is pressed, structured info is passed to
-// provided callback.
-//
-// no unit tests for this module, it is jQuery manipulation mostly.
-//
-
-
-var form = {};
-
-form.init = function (callback) {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(function () {
-    // form logic:
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bcast, #type_cmd, #type_bg').change(function () {
-      var bgSel = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bg').is(':checked');
-      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx, #tab').prop('disabled', bgSel);
-    });
-
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo, #cmd_random').change(function () {
-      var echoSel = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo').is(':checked');
-      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo_text').prop('disabled', !echoSel);
-      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_random_sync, #cmd_random_async').prop('disabled', echoSel);
-    });
-
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_all, #ctx_select').change(function () {
-      var ctxAll = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_all').is(':checked');
-      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('input[type=checkbox]').prop('disabled', ctxAll);
-    });
-
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_all, #tab_same, #tab_provided').change(function () {
-      var tabProv = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided').is(':checked');
-      __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').prop('disabled', !tabProv);
-    });
-
-    function validateTabId() {
-      var el = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text');
-      if (el.val() === '') {
-        el.val(1);
-      }
-      if (parseInt(el.val(), 10) < 0) {
-        el.val(1);
-      }
-    }
-
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').blur(validateTabId);
-
-    // button logic:
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#submit').click(function () {
-      validateTabId();
-      if (typeof callback === 'function') {
-        var res = {};
-        var typeBcast = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bcast').is(':checked');
-        var typeBg = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bg').is(':checked');
-        var cmdEcho = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo').is(':checked');
-        var cmdEchoText = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo_text').val();
-        var cmdRandomSync = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_random_sync').is(':checked');
-        var ctxAll = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_all').is(':checked');
-        var ctxSelBg = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_bg').is(':checked');
-        var ctxSelCt = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_ct').is(':checked');
-        var ctxSelDt = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_dt').is(':checked');
-        var ctxSelPopup = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_popup').is(':checked');
-        var ctxSelOptions = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#ctx_select_options').is(':checked');
-        var tabAll = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_all').is(':checked');
-        var tabProvided = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided').is(':checked');
-        var tabProvidedVal = parseInt(__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').val(), 10);
-        // command:
-        if (cmdEcho) {
-          res.cmd = 'echo';res.arg = cmdEchoText;
-        } else if (cmdRandomSync) {
-          res.cmd = 'random';
-        } else {
-          res.cmd = 'randomAsync';
-        }
-        // type:
-        if (typeBg) {
-          res.type = 'bg';
-        } else {
-          if (typeBcast) {
-            res.type = 'bcast';
-          } else {
-            res.type = 'cmd';
-          }
-          // contexts:
-          res.ctx_all = ctxAll;
-          if (!ctxAll) {
-            var arr = [];
-            if (ctxSelBg) {
-              arr.push('bg');
-            }
-            if (ctxSelCt) {
-              arr.push('ct');
-            }
-            if (ctxSelDt) {
-              arr.push('dt');
-            }
-            if (ctxSelPopup) {
-              arr.push('popup');
-            }
-            if (ctxSelOptions) {
-              arr.push('options');
-            }
-            res.ctxs = arr;
-          }
-          // tab id:
-          if (tabAll) {
-            res.tab = -1;
-          } else if (tabProvided) {
-            res.tab = tabProvidedVal;
-          } else {
-            res.tab = -2;
-          } // same id
-        }
-        callback(res);
-      }
-      return false; // stop propagation
-    });
-
-    // default values:
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#type_bcast, #cmd_random, #cmd_random_sync, #ctx_all, #tab_all').attr('checked', true);
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo_text').val('salsita');
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#cmd_echo_text').prop('disabled', true);
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('input[type=checkbox]').prop('checked', true);
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('input[type=checkbox]').prop('disabled', true);
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').val(1);
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#tab_provided_text').prop('disabled', true);
-  });
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (form);
-
-/***/ }),
 /* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -12909,7 +12909,7 @@ module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_handlers__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modules_msg__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modules_form__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modules_form__ = __webpack_require__(70);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__modules_runner__ = __webpack_require__(72);
 
 

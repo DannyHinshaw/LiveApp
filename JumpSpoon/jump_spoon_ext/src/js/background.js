@@ -1,6 +1,7 @@
 import handlers from './modules/handlers';
 import msg from './modules/msg';
 
+
 // here we use SHARED message handlers, so all the contexts support the same
 // commands. in background, we extend the handlers with two special
 // notification hooks. but this is NOT typical messaging system usage, since
@@ -17,7 +18,8 @@ console.log('BACKGROUND SCRIPT WORKS!'); // eslint-disable-line no-console
 
 /*
 
-/******* DEMO FOR MESSENGER *******//*
+/******* DEMO FOR MESSENGER *******/
+/*
 
 // adding special background notification handlers onConnect / onDisconnect
 function logEvent(ev, context, tabId) {
@@ -44,18 +46,20 @@ function helloWorld() {
 helloWorld();
 */
 
+
 const HEADERS_TO_STRIP_LOWERCASE = [
   'content-security-policy',
   'x-frame-options',
+  'x-xss-protection'
 ];
 
-chrome.webRequest.onHeadersReceived.addListener(
-  function(details) {
+chrome.webRequest.onHeadersReceived.addListener((details) => {
     return {
-      responseHeaders: details.responseHeaders.filter(function(header) {
+      responseHeaders: details.responseHeaders.filter((header) => {
+        console.log(header.name);
         return HEADERS_TO_STRIP_LOWERCASE.indexOf(header.name.toLowerCase()) < 0;
       })
     };
   }, {
-    urls: ["<all_urls>"]
-  }, ["blocking", "responseHeaders"]);
+    urls: ['<all_urls>']
+  }, ['blocking', 'responseHeaders']);
