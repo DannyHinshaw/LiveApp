@@ -81,9 +81,10 @@
 }
 /* LEFT PANEL */
 .formFieldAndSubmitContainer {
-	height: 100%;
 	float: left;
+	height: 99%;
 	overflow-y: scroll;
+	resize: horizontal;
 	width: 29%;
 }
 /* RIGHT PANEL */
