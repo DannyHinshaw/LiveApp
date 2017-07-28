@@ -38,10 +38,6 @@
 .formSubmit {
 	margin-top: 1rem !important;
 }
-/* Hide the Airtable Ad footer */
-.createYourOwnFormWithAirtable {
-	display: none;
-}
 /* Custom Added Elements*/
 .toggle-instructions {
 	background-color: #97eaa2;
@@ -90,7 +86,7 @@
 	left: 0;
 	margin: 4rem 0 0 29rem;
 	overflow-y: auto;
-	padding: .75rem;
+	padding: 0;
 	position: fixed;
 	resize: horizontal;
 	top: 0;

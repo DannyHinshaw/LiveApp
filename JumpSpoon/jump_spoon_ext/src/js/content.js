@@ -80,17 +80,11 @@ const form = {
     });
   },
 
-/*
-  getVenueID() {
-
-    // Currently this input is the first input, may change in the future...
-    // for now this is the easiest way
-    // TODO: Replacement for copy/pasta
-    // GM_setClipboard(document.querySelector('input').value);
-    const venIdDesc = document.querySelectorAll('.description')[1];
-    venIdDesc.innerHTML += this.templates.venueIdClipped;
+  removeUnwantedElements() {
+    [document.querySelector('.formCoverImageContainer'),
+      ...document.querySelectorAll('.createYourOwnFormWithAirtable')]
+    .forEach(el => el.remove());
   },
-*/
 
   setIframe() {
     const formContainer = document.querySelector('.formFieldAndSubmitContainer');
@@ -118,6 +112,7 @@ const form = {
     // DOM JS Methods need to wait shortly for load
     setTimeout(() => {
       this.clearInstructions();
+      this.removeUnwantedElements();
       this.descriptionLimit();
       // this.getVenueID();
       this.setIframe();
