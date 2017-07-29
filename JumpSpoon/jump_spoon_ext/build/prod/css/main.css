@@ -81,16 +81,21 @@
 }
 /* LEFT PANEL */
 .formFieldAndSubmitContainer {
-	height: 100%;
 	float: left;
+	height: 99%;
 	overflow-y: scroll;
-	width: 29%;
+	width: 22rem;
 }
 /* RIGHT PANEL */
 #iframeContainer {
+	bottom: 0;
+	display: inline-block;
 	float: right;
-	height: 100%;
-	width: 64%;
+	height: 98.5%;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: calc(100vw - 26rem);
 }
 iframe {
 	height: 100%;
