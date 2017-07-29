@@ -1,6 +1,7 @@
+/*
 import handlers from './modules/handlers';
 import msg from './modules/msg';
-
+*/
 // here we use SHARED message handlers, so all the contexts support the same
 // commands. but this is NOT typical messaging system usage, since you usually
 // want each context to handle different commands. for this you don't need
@@ -26,11 +27,13 @@ const form = {
   // Custom CSS Styles
   templates: {
     iframeContainer: `<div id='iframeContainer'></div>`,
-    instructions: `<div class='toggle-instructions'>
-                      <span class='toggle-icon'> + </span> Click to toggle instructions
-                    </div>
-                    <br>`,
-    venueIdClipped: `<span style='color: #61ca61; display: block;'><br>Copied to clipboard!</span>`
+    instructions   : `<div class='toggle-instructions'>` + // eslint-disable-line key-spacing
+                        `<span class='toggle-icon'> + </span> Click to toggle instructions
+                      </div>
+                      <br>`,
+    venueIdClipped : `<span style='color: #61ca61; display: block;'>` +  // eslint-disable-line key-spacing
+                       `<br>Copied to clipboard!
+                      </span>`
   },
 
   /*
@@ -72,9 +75,12 @@ const form = {
   },
 
   descriptionLimit() {
+    /* eslint no-param-reassign: ["error", { "props": false }] */
     // Fixes formatting where descriptions are too long and screw up grid
-    [...document.querySelectorAll('.description')].forEach((d) => {
-      d.textContent.length > 52 ? d.parentElement.style.display = 'block' : null;
+    return [...document.querySelectorAll('.description')].forEach((d) => {
+      d.textContent.length > 52 // eslint-disable-line no-unused-expressions
+        ? d.parentElement.style.display = 'block'
+        : null;
     });
   },
 

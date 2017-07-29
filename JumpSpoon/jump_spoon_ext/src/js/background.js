@@ -1,3 +1,4 @@
+/* eslint-env webextensions */
 /*
 import handlers from './modules/handlers';
 import msg from './modules/msg';
@@ -33,8 +34,9 @@ const message = msg.init('bg', handlers.create('bg'));
 // issue `echo` command in 10 seconds after invoked,
 // schedule next run in 5 minutes
 function helloWorld() {
-  console.log('===== will broadcast "hello world!" in 10 seconds'); // eslint-disable-line no-console
-  setTimeout(() => {
+  console.log( // eslint-disable-line no-console
+  '===== will broadcast "hello world!" in 10 seconds');
+    setTimeout(() => {
     console.log('>>>>> broadcasting "hello world!" now'); // eslint-disable-line no-console
     message.bcast('echo', 'hello world!', () =>
       console.log('<<<<< broadcasting done') // eslint-disable-line no-console
@@ -54,13 +56,11 @@ const HEADERS_TO_STRIP_LOWERCASE = [
   'x-xss-protection'
 ];
 
-chrome.webRequest.onHeadersReceived.addListener((details) => {
+chrome.webRequest.onHeadersReceived.addListener((details) => { // eslint-disable-line arrow-body-style, max-len
   return {
     responseHeaders: details.responseHeaders.filter((header) => {
       console.log(header.name); // eslint-disable-line no-console
       return HEADERS_TO_STRIP_LOWERCASE.indexOf(header.name.toLowerCase()) < 0;
     })
   };
-}, {
-  urls: ['<all_urls>']
-}, ['blocking', 'responseHeaders']);
+}, { urls: ['<all_urls>'] }, ['blocking', 'responseHeaders']);
