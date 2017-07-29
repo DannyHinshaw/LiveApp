@@ -27,7 +27,7 @@ function ChromeRuntime() {
     if (myPrefix === 'A') { // on that will be passed to onConnect
       this.sender = { id, tab: { id: tabId } };
       if (counter++ & 1) { tabId++; } // eslint-disable-line
-      if (this.name === 'dt') { this.sender = {}; }  // developer tools
+      if (this.name === 'dt') { this.sender = {}; } // developer tools
     }
     // disconnect
     this.disconnect = () => {

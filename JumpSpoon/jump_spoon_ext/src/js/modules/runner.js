@@ -4,6 +4,7 @@
 // exported function `go` takes two parameters: messaging object `msg` on which
 // it'll invoke the methods, and structured `info` which is collected from the
 // form. we assume both `msg` and `info` parameters to be valid
+/* eslint-disable */
 
 import message from './msg';
 

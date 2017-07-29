@@ -1,5 +1,5 @@
- import handlers from './modules/handlers';
- import msg from './modules/msg';
+import handlers from './modules/handlers';
+import msg from './modules/msg';
 
 // here we use SHARED message handlers, so all the contexts support the same
 // commands. but this is NOT typical messaging system usage, since you usually
@@ -15,23 +15,22 @@
 console.log('CONTENT SCRIPT WORKS!'); // eslint-disable-line no-console
 
 /*
-msg.init('ct', handlers.create('ct'));
+ msg.init('ct', handlers.create('ct'));
 
-console.log('jQuery version:', $().jquery); // eslint-disable-line no-console
-*/
-
+ console.log('jQuery version:', $().jquery); // eslint-disable-line no-console
+ */
 
 
 const form = {
 
   // Custom CSS Styles
   templates: {
-    iframeContainer: `<div id="iframeContainer"></div>`,
-    instructions: `<div class="toggle-instructions">
-                      <span class="toggle-icon"> + </span> Click to toggle instructions
+    iframeContainer: `<div id='iframeContainer'></div>`,
+    instructions: `<div class='toggle-instructions'>
+                      <span class='toggle-icon'> + </span> Click to toggle instructions
                     </div>
                     <br>`,
-    venueIdClipped: `<span style="color: #61ca61; display: block;"><br>Copied to clipboard!</span>`
+    venueIdClipped: `<span style='color: #61ca61; display: block;'><br>Copied to clipboard!</span>`
   },
 
   /*
@@ -45,7 +44,7 @@ const form = {
 
   clearInstructions() {
     const formName = document.querySelector('.formName');
-    formName.insertAdjacentHTML("afterend", this.templates.instructions);
+    formName.insertAdjacentHTML('afterend', this.templates.instructions);
 
     // Remove instruction block and assign toggle function
     document.querySelector('.formDescription').style.display = 'none';
@@ -73,24 +72,23 @@ const form = {
   },
 
   descriptionLimit() {
-
     // Fixes formatting where descriptions are too long and screw up grid
-    [...document.querySelectorAll('.description')].forEach(d => {
-      return d.textContent.length > 52 ? d.parentElement.style.display = 'block' : null;
+    [...document.querySelectorAll('.description')].forEach((d) => {
+      d.textContent.length > 52 ? d.parentElement.style.display = 'block' : null;
     });
   },
 
   removeUnwantedElements() {
     [document.querySelector('.formCoverImageContainer'),
       ...document.querySelectorAll('.createYourOwnFormWithAirtable')]
-    .forEach(el => el.remove());
+      .forEach(el => el.remove());
   },
 
   setIframe() {
     const formContainer = document.querySelector('.formFieldAndSubmitContainer');
     const formHeader = document.querySelector('.formHeader');
 
-    //this.wrapAll(formEls, wrapperDiv);
+    // this.wrapAll(formEls, wrapperDiv);
     // this.addCSS(this.css.splitView);
     formContainer.prepend(formHeader);
     formContainer.insertAdjacentHTML('afterend', this.templates.iframeContainer);
@@ -103,12 +101,10 @@ const form = {
     iframe.id = 'testIframe';
     iframe.src = document.querySelectorAll('.detailViewTextWithLinks a')[0].href;// testthis.ajax('http://test.com');// 'https://jsbin.com';
     document.getElementById('iframeContainer').prepend(iframe);
-
   },
 
   init() {
-    //this.addCSS(this.css.main);
-
+    // this.addCSS(this.css.main);
     // DOM JS Methods need to wait shortly for load
     setTimeout(() => {
       this.clearInstructions();

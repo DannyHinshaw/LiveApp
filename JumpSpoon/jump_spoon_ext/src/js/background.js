@@ -1,6 +1,7 @@
+/*
 import handlers from './modules/handlers';
 import msg from './modules/msg';
-
+*/
 
 // here we use SHARED message handlers, so all the contexts support the same
 // commands. in background, we extend the handlers with two special
@@ -54,12 +55,12 @@ const HEADERS_TO_STRIP_LOWERCASE = [
 ];
 
 chrome.webRequest.onHeadersReceived.addListener((details) => {
-    return {
-      responseHeaders: details.responseHeaders.filter((header) => {
-        console.log(header.name);
-        return HEADERS_TO_STRIP_LOWERCASE.indexOf(header.name.toLowerCase()) < 0;
-      })
-    };
-  }, {
-    urls: ['<all_urls>']
-  }, ['blocking', 'responseHeaders']);
+  return {
+    responseHeaders: details.responseHeaders.filter((header) => {
+      console.log(header.name); // eslint-disable-line no-console
+      return HEADERS_TO_STRIP_LOWERCASE.indexOf(header.name.toLowerCase()) < 0;
+    })
+  };
+}, {
+  urls: ['<all_urls>']
+}, ['blocking', 'responseHeaders']);

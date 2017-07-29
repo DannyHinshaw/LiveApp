@@ -401,8 +401,9 @@ Messaging.prototype.onCustomMsg = function onCustomMsg(message) {
   if (this.id === 'bg') {
     // background
     if (message.cmd === 'request') {
-      const targetPorts = this.selectTargets(false, message.tabId, message.contexts,
-                                           message.category, message.portId);
+      const targetPorts = this.selectTargets(
+        false, message.tabId, message.contexts, message.category, message.portId
+      );
       let responsesNeeded = targetPorts.length;
       if ((message.tabId === undefined) &&
            (!message.contexts || (message.contexts.indexOf('bg') !== -1))) {
