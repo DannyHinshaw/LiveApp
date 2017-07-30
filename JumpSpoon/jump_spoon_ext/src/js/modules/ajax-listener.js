@@ -13,6 +13,7 @@ export const AJAXListener = {
       request.__defineGetter__('responseText', () => { // eslint-disable-line no-restricted-properties, line
         console.warn('AirTableXHR::Something tried to get the responseText'); // eslint-disable-line no-console
         console.debug(response); // eslint-disable-line no-console
+        // If AirTable Form performs AJAX > 1, prevent loading multiple formify objects
         if (!loaded) {
           window.dispatchEvent(new CustomEvent('AirTableXHR::finished'));
           return loaded = true; // eslint-disable-line no-return-assign
