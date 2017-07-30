@@ -11,7 +11,7 @@ module.exports = _.merge({}, config, {
     path: path.resolve(__dirname, '../build/dev'),
   },
 
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   plugins: [
     new CopyWebpackPlugin([
       { from: './src' }

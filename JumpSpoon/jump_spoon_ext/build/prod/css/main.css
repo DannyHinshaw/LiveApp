@@ -58,8 +58,14 @@
 								Split-View
 *********************************************************/
 /* Left align the form and reduce width*/
+.formContent:after {
+	content: "";
+	display: table;
+	clear: both;
+}
 .formContent {
-	width: 100%;
+	height: 98%;
+	width: 98%;
 }
 .formHeader {
 	height: 5rem;
@@ -73,26 +79,25 @@
 .formSubmit {
 	margin-left: 0;
 }
+/* LEFT PANEL */
 .formFieldAndSubmitContainer {
-	height:100vh;
-	left: 0;
-	max-width: 25rem;
-	min-width: 15rem;
-	overflow: auto;
-	position: fixed;
-	resize: horizontal;
+	float: left;
+	height: 99%;
+	overflow-y: scroll;
+	width: 22rem;
+}
+/* RIGHT PANEL */
+#iframeContainer {
+	bottom: 0;
+	display: inline-block;
+	float: right;
+	height: 98.5%;
+	position: absolute;
 	right: 0;
 	top: 0;
+	width: calc(100vw - 26rem);
 }
-#iframeContainer {
-	background-color: blue;
-	height:100vh;
-	left: 0;
-	margin: 4rem 0 0 29rem;
-	overflow-y: auto;
-	padding: .75rem;
-	position: fixed;
-	resize: horizontal;
-	top: 0;
-	width: 100%
+iframe {
+	height: 100%;
+	width: 100%;
 }
