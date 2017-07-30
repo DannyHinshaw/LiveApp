@@ -18,10 +18,8 @@ import msg from './modules/msg';
 
 console.log('BACKGROUND SCRIPT WORKS!'); // eslint-disable-line no-console
 
-
-
-/******* DEMO FOR MESSENGER *******/
-
+/**
+ *  DEMO FOR MESSENGER
 /*
 // adding special background notification handlers onConnect / onDisconnect
 function logEvent(ev, context, tabId) {
@@ -58,7 +56,7 @@ const HEADERS_TO_STRIP_LOWERCASE = [
 
 chrome.webRequest.onHeadersReceived.addListener((details) => { // eslint-disable-line arrow-body-style, max-len
   return {
-    responseHeaders: details.responseHeaders.filter((header) => {
+    responseHeaders: details.responseHeaders.filter((header) => { // eslint-disable-line arrow-body-style, max-len
       return HEADERS_TO_STRIP_LOWERCASE.indexOf(header.name.toLowerCase()) < 0;
     })
   };
