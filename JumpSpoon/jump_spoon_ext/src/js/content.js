@@ -14,22 +14,19 @@ import { AirTableFormifier } from './modules/airtable-formifier';
 // instance of given context is created / destroyed, or you want to be able to
 // issue command requests from this context), you may simply omit the
 // `handlers` parameter for good when invoking msg.init()
-console.log('LiveApp formify running...'); // eslint-disable-line no-console
+console.log('LiveApp formifier running...'); // eslint-disable-line no-console
 /*
  msg.init('ct', handlers.create('ct'));
  console.log('jQuery version:', $().jquery); // eslint-disable-line no-console
  */
 
-// Inject a script to hijack the AirTable API calls
-// Fires a custom window event when calls resolve
-// Other methods for detecting DOM load/ready failed
-AJAXListener.injectScript(AJAXListener.hijacker);
-
-window.addEventListener('AirTableXHR::finished', () => {
+// Wait for AirTable to finish various AJAX calls
+async function waitForAJAX() {
+  await AJAXListener.injectScript();
+  await AJAXListener.loadEvent();
   // Initialize settings
   // Prototypal object creation with object factory function
-  const formFactoryFn = () => Object.create(AirTableFormifier);
-  const formifier = formFactoryFn();
-  // Apparently just need to open the thread up, so we use setTimeout
-  return setTimeout(() => formifier.init());
-});
+  return Object.create(AirTableFormifier);
+}
+
+waitForAJAX().then(formifier => formifier.init());

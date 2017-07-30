@@ -19,6 +19,7 @@ export const AirTableFormifier = {
     // Remove instruction block and assign toggle function
     document.querySelector('.formDescription').style.display = 'none';
     document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
+    return this;
   },
 
   toggleInstructions() {
@@ -39,22 +40,20 @@ export const AirTableFormifier = {
       toggler.style.backgroundColor = '#97eaa2';
       toggleIcon.innerHTML = ' + ';
     }
+    return this;
   },
 
   descriptionLimit() {
-    /* eslint no-param-reassign: ["error", { "props": false }] */
     // Fixes formatting where descriptions are too long and screw up grid
-    return [...document.querySelectorAll('.description')].forEach((d) => {
-      d.textContent.length > 52 // eslint-disable-line no-unused-expressions
-        ? d.parentElement.style.display = 'block'
-        : null;
+    return [...document.querySelectorAll('.description')].forEach((d) => { // eslint-disable-line arrow-body-style
+      return d.textContent.length > 52 ? d.parentElement.setAttribute('style', 'display:block;') : this;
     });
   },
 
   removeUnwantedElements() {
     [document.querySelector('.formCoverImageContainer'),
       ...document.querySelectorAll('.createYourOwnFormWithAirtable')]
-      .forEach(el => el ? el.remove() : null); // eslint-disable-line no-confusing-arrow
+      .forEach(el => el ? el.remove() : this); // eslint-disable-line no-confusing-arrow
   },
 
   createIframe(type, link) {
@@ -72,7 +71,7 @@ export const AirTableFormifier = {
         // May change in the future. For now this is the recurring event form link
         return Object.defineProperty(AirTableFormifier, 'recurEventLink', { value: link.href });
       }
-      return link.href ? container.prepend(this.createIframe(_getType(link), link.href)) : null;
+      return link.href ? container.prepend(this.createIframe(_getType(link), link.href)) : this;
     });
   },
 
