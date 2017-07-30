@@ -1,16 +1,19 @@
 export const AirTableFormifier = {
-
-  // Custom CSS Styles
+  // Custom Element Templates
   templates: {
+    /* eslint-disable key-spacing */
     iframeContainer: `<div id='iframeContainer'></div>`,
-    instructions   : `<div class='toggle-instructions'>` + // eslint-disable-line key-spacing
-    `<span class='toggle-icon'> + </span> Click to toggle instructions
+    instructions   : `<div class='toggle-instructions'>
+                        <span class='toggle-icon'> + </span> Click to toggle instructions
                       </div>
                       <br>`,
-    venueIdClipped : `<span style='color: #61ca61; display: block;'>` +  // eslint-disable-line key-spacing
-    `<br>Copied to clipboard!
+    venueIdClipped : `<span style='color: #61ca61; display: block;'>
+                        <br>Copied to clipboard!
                       </span>`
+    /* eslint-enable key-spacing */
   },
+
+  linkTabs: [],
 
   clearInstructions() {
     const formName = document.querySelector('.formName');
@@ -56,34 +59,74 @@ export const AirTableFormifier = {
       .forEach(el => el ? el.remove() : this); // eslint-disable-line no-confusing-arrow
   },
 
-  createIframe(type, link) {
+  /**
+   * Tail of promise creating stack for browsing tabs
+   * @param tab
+   * @param callback
+   * @returns {*}
+   */
+  createTabs(tab, callback) {
+    this.linkTabs.push(tab);
+    return callback();
+  },
+
+  /**
+   * Generates an iframe from given params
+   * @param type: Facebook, Instagram or Website of Venue
+   * @param href: URL
+   * @returns {Element}
+   */
+  createIframe({ type, href }) {
     const iframe = document.createElement('iframe');
     iframe.className = `iframe-stacked ${type}`;
-    iframe.src = link.startsWith('http') ? link : `http://${link}`;
+    iframe.src = href.startsWith('http') ? href : `http://${href}`;
     return iframe;
   },
 
-  generateIframes(container) {
-    const _getType = n => n.closest('.sharedFormField').firstElementChild.textContent.split('Venue ')[1].trim();
-
-    [...document.querySelectorAll('.detailViewTextWithLinks a')].forEach((link, i) => {
-      if (i === 3) {
-        // May change in the future. For now this is the recurring event form link
-        return Object.defineProperty(AirTableFormifier, 'recurEventLink', { value: link.href });
-      }
-      return link.href ? container.prepend(this.createIframe(_getType(link), link.href)) : this;
-    });
+  /**
+   * Gathers the form links and calls filter on them
+   * @returns {Array.<*>}
+   */
+  getLinks() {
+    const getName = l => l.closest('.sharedFormField').firstElementChild.textContent.split('Venue ')[1].trim();
+    return Promise.all([...document.querySelectorAll('.sharedFormField .detailViewTextWithLinks a')]
+      .map((link) => {
+        if (link.href.includes('https://airtable.com')) {
+          // Side-Effect: Assign recurEventLink for formModal while already iterating links
+          return Object.defineProperty(AirTableFormifier, 'recurEventLink', { value: link.href });
+        }
+        return { type: getName(link), href: link.href };
+      }).filter(link => link.type));
   },
 
+  /**
+   * Calls iframe DOM creation method and appends it to container
+   * @param container
+   * @param tab
+   */
+  generateIframes(container, tab) {
+    const callback = () => container.prepend(this.createIframe(tab));
+    return this.createTabs(tab, callback);
+  },
+
+  buildVenueTabs(container) {
+    return this.getLinks()
+      .then(tabs =>
+        tabs.forEach(tab => this.generateIframes(container, tab)));
+  },
+
+  /**
+   * Starts the method chain to create/add iframes to UI
+   * @returns {*}
+   */
   setIframes() {
     const formContainer = document.querySelector('.formFieldAndSubmitContainer');
     const formHeader = document.querySelector('.formHeader');
-
     formContainer.prepend(formHeader);
     formContainer.insertAdjacentHTML('afterend', this.templates.iframeContainer);
 
-    // Methods for dynamically generating links
-    return this.generateIframes(document.getElementById('iframeContainer'));
+    return this.buildVenueTabs(document.getElementById('iframeContainer'))
+      .then(() => console.log('create nav here', this.linkTabs)); // eslint-disable-line no-console
   },
 
   init() {

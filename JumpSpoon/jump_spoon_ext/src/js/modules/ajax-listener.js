@@ -56,7 +56,8 @@ export const AJAXListener = {
    * @returns {Promise}
    */
   loadEvent() {
+    // TODO: Figure out how to completely remove eventListener
     return new Promise(resolve =>
-      window.addEventListener('AirTableXHR::finished', resolve, { once: true }));
+      window.addEventListener('AirTableXHR::finished', resolve, { once: true }, true));
   }
 };
