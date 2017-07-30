@@ -18,11 +18,11 @@ import msg from './modules/msg';
 
 console.log('BACKGROUND SCRIPT WORKS!'); // eslint-disable-line no-console
 
-/*
+
 
 /******* DEMO FOR MESSENGER *******/
-/*
 
+/*
 // adding special background notification handlers onConnect / onDisconnect
 function logEvent(ev, context, tabId) {
   console.log(`${ev}: context = ${context}, tabId = ${tabId}`); // eslint-disable-line no-console
@@ -59,8 +59,16 @@ const HEADERS_TO_STRIP_LOWERCASE = [
 chrome.webRequest.onHeadersReceived.addListener((details) => { // eslint-disable-line arrow-body-style, max-len
   return {
     responseHeaders: details.responseHeaders.filter((header) => {
-      console.log(header.name); // eslint-disable-line no-console
       return HEADERS_TO_STRIP_LOWERCASE.indexOf(header.name.toLowerCase()) < 0;
     })
   };
 }, { urls: ['<all_urls>'] }, ['blocking', 'responseHeaders']);
+
+// Used to let content script know when to call init() method (seems to have no effect))
+/*
+chrome.webRequest.onCompleted.addListener((details) => {
+  /* Process the XHR response *//*
+  logEvent.bind(null, details);
+
+}, { urls: ['<all_urls>'] });
+*/

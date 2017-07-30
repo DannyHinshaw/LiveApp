@@ -15,6 +15,42 @@
 
 console.log('CONTENT SCRIPT WORKS!'); // eslint-disable-line no-console
 
+const airTableXHREvent = new CustomEvent('AirTableXHR::finished');
+function injectScript(source) {
+  // Hack to listen for AirTable API calls to finish loading
+  const elem = document.createElement("script");
+  elem.type = "text/javascript";
+  elem.innerHTML = source;
+  document.documentElement.appendChild(elem);
+}
+
+injectScript("("+(function() {
+
+    function bindResponse(request, response) {
+      request.__defineGetter__("responseText", function() {
+        console.warn('Something tried to get the responseText');
+        console.debug(response);
+        window.dispatchEvent(new CustomEvent('AirTableXHR::finished'));
+        return response;
+      })
+    }
+
+    function processResponse(request,caller,method,path) {
+      bindResponse(request, request.responseText);
+    }
+
+    const proxied = window.XMLHttpRequest.prototype.open;
+    window.XMLHttpRequest.prototype.open = function(method, path, async) {
+      const caller = arguments.callee.caller;
+      this.addEventListener('readystatechange', function() {
+        if (this.readyState === 4) {
+          processResponse(this, caller, method, path);
+        }
+      }, true);
+      return proxied.apply(this, [].slice.call(arguments));
+    };
+  }).toString()+")()");
+
 /*
  msg.init('ct', handlers.create('ct'));
 
@@ -78,7 +114,7 @@ window.addEventListener('load', (event) => {
     removeUnwantedElements() {
       [document.querySelector('.formCoverImageContainer'),
         ...document.querySelectorAll('.createYourOwnFormWithAirtable')]
-        .forEach(el => el.remove());
+          .forEach(el => el ? el.remove(): null);
     },
 
     createIframe(type, link) {
@@ -113,19 +149,22 @@ window.addEventListener('load', (event) => {
 
     init() {
       // DOM JS Methods need to wait shortly after window for load
-      setTimeout(() => {
+      // setTimeout(() => {
         this.clearInstructions();
         this.removeUnwantedElements();
         this.descriptionLimit();
         this.setIframes();
-      }, 200);
+      // }, 200);
     }
   };
   console.log(event); // eslint-disable-line no-console
 
-  // Initialize settings
-  // Prototypal object creation with object factory function
-  const formFactoryFn = () => Object.create(form);
-  const formify = formFactoryFn();
-  return formify.init();
+  window.addEventListener('AirTableXHR::finished', () => {
+    // Initialize settings
+    // Prototypal object creation with object factory function
+    const formFactoryFn = () => Object.create(form);
+    const formify = formFactoryFn();
+    // Apparently just need to open the thread up, so we use setTimeout
+    return setTimeout(() => formify.init());
+  });
 });
