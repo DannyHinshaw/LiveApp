@@ -33,22 +33,11 @@ export const AirTableFormifier = {
 
   linkTabs: [],
 
-  clearInstructions() {
-    const formName = document.querySelector('.formName');
-    formName.insertAdjacentHTML('afterend', this.templates.instructions);
-
-    // Remove instruction block and assign toggle function
-    document.querySelector('.formDescription').style.display = 'none';
-    document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
-    return this;
-  },
-
   toggleInstructions() {
     const header = document.querySelector('.formHeader');
     const instructions = document.querySelector('.formDescription');
     const toggler = document.querySelector('.toggle-instructions');
     const toggleIcon = toggler.querySelector('.toggle-icon');
-    toggler.classList.toggle('open');
 
     if (toggler.classList.contains('open')) {
       header.style.height = '20rem';
@@ -61,6 +50,16 @@ export const AirTableFormifier = {
       toggler.style.backgroundColor = '#97eaa2';
       toggleIcon.innerHTML = ' + ';
     }
+    return this;
+  },
+
+  clearInstructions() {
+    const formName = document.querySelector('.formName');
+    formName.insertAdjacentHTML('afterend', this.templates.instructions);
+
+    // Remove instruction block and assign toggle function
+    document.querySelector('.formDescription').style.display = 'none';
+    document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
     return this;
   },
 
@@ -95,10 +94,12 @@ export const AirTableFormifier = {
    * @returns {Element}
    */
   createIframe({ type, href }) {
-    const iframe = document.createElement('iframe');
-    iframe.className = `iframe-stacked ${type}`;
-    iframe.src = href.startsWith('http') ? href : `http://${href}`;
-    return iframe;
+    return ((iframe) => {
+      iframe.classList.add('iframe-stacked', type);
+      iframe.setAttribute('src',
+        href.startsWith('http') ? href : `http://${href}`);
+      return iframe;
+    })(document.createElement('iframe'));
   },
 
   /**
@@ -137,23 +138,45 @@ export const AirTableFormifier = {
    * Starts the method chain to create/add iframes to UI
    * @returns {*}
    */
-  setIframes() {
+  async setIframes() {
     const formContainer = document.querySelector('.formFieldAndSubmitContainer');
     const formHeader = document.querySelector('.formHeader');
     formContainer.prepend(formHeader);
     formContainer.insertAdjacentHTML('afterend', this.templates.iframeContainer);
     const iframeContainer = document.getElementById('iframeContainer');
 
-    return this.buildVenueTabs(iframeContainer)
-      .then(() => iframeContainer
-        .insertAdjacentHTML('afterbegin', this.templates.iframeNavigator(this.linkTabs)));
+    await this.buildVenueTabs(iframeContainer);
+    return iframeContainer
+      .insertAdjacentHTML('afterbegin', this.templates.iframeNavigator(this.linkTabs));
   },
 
-  init() {
+  combineIframeTabEvents() {
+    console.log('combineIframeTabEvents::what it sounds like....');
+    return this;
+  },
+
+  tabEvents() {
+    console.log('set tab events');
+    return this;
+  },
+
+  iframeEvents() {
+    console.log('set iframe events');
+    return this;
+  },
+
+  focusFirstIframe() {
+    console.log(this.linkTabs);
+    return this;
+  },
+
+  async init() {
     // DOM JS Methods need to wait shortly after window for load
-    this.clearInstructions();
-    this.descriptionLimit();
-    this.removeUnwantedElements();
-    this.setIframes();
+    await this.clearInstructions().toggleInstructions();
+    await this.descriptionLimit();
+    await this.removeUnwantedElements();
+    await this.setIframes();
+    await this.focusFirstIframe();
+    return this;
   }
 };

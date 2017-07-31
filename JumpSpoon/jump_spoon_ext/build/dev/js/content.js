@@ -2599,10 +2599,16 @@ var AJAXListener = {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AirTableFormifier; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_promise__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_promise___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_promise__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_toConsumableArray__ = __webpack_require__(103);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_toConsumableArray___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_toConsumableArray__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_core_js_promise__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_core_js_promise___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_babel_runtime_core_js_promise__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_toConsumableArray__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_toConsumableArray___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_toConsumableArray__);
+
+
 
 
 var AirTableFormifier = {
@@ -2625,21 +2631,11 @@ var AirTableFormifier = {
 
   linkTabs: [],
 
-  clearInstructions: function clearInstructions() {
-    var formName = document.querySelector('.formName');
-    formName.insertAdjacentHTML('afterend', this.templates.instructions);
-
-    // Remove instruction block and assign toggle function
-    document.querySelector('.formDescription').style.display = 'none';
-    document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
-    return this;
-  },
   toggleInstructions: function toggleInstructions() {
     var header = document.querySelector('.formHeader');
     var instructions = document.querySelector('.formDescription');
     var toggler = document.querySelector('.toggle-instructions');
     var toggleIcon = toggler.querySelector('.toggle-icon');
-    toggler.classList.toggle('open');
 
     if (toggler.classList.contains('open')) {
       header.style.height = '20rem';
@@ -2654,11 +2650,20 @@ var AirTableFormifier = {
     }
     return this;
   },
+  clearInstructions: function clearInstructions() {
+    var formName = document.querySelector('.formName');
+    formName.insertAdjacentHTML('afterend', this.templates.instructions);
+
+    // Remove instruction block and assign toggle function
+    document.querySelector('.formDescription').style.display = 'none';
+    document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
+    return this;
+  },
   descriptionLimit: function descriptionLimit() {
     var _this = this;
 
     // Fixes formatting where descriptions are too long and screw up grid
-    return [].concat(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_toConsumableArray___default()(document.querySelectorAll('.description'))).forEach(function (d) {
+    return [].concat(__WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_toConsumableArray___default()(document.querySelectorAll('.description'))).forEach(function (d) {
       // eslint-disable-line arrow-body-style
       return d.textContent.length > 52 ? d.parentElement.setAttribute('style', 'display:block;') : _this;
     });
@@ -2666,7 +2671,7 @@ var AirTableFormifier = {
   removeUnwantedElements: function removeUnwantedElements() {
     var _this2 = this;
 
-    [document.querySelector('.formCoverImageContainer')].concat(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_toConsumableArray___default()(document.querySelectorAll('.createYourOwnFormWithAirtable'))).forEach(function (el) {
+    [document.querySelector('.formCoverImageContainer')].concat(__WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_toConsumableArray___default()(document.querySelectorAll('.createYourOwnFormWithAirtable'))).forEach(function (el) {
       return el ? el.remove() : _this2;
     }); // eslint-disable-line no-confusing-arrow
   },
@@ -2694,10 +2699,11 @@ var AirTableFormifier = {
     var type = _ref.type,
         href = _ref.href;
 
-    var iframe = document.createElement('iframe');
-    iframe.className = 'iframe-stacked ' + type;
-    iframe.src = href.startsWith('http') ? href : 'http://' + href;
-    return iframe;
+    return function (iframe) {
+      iframe.classList.add('iframe-stacked', type);
+      iframe.setAttribute('src', href.startsWith('http') ? href : 'http://' + href);
+      return iframe;
+    }(document.createElement('iframe'));
   },
 
 
@@ -2709,7 +2715,7 @@ var AirTableFormifier = {
     var getName = function getName(l) {
       return l.closest('.sharedFormField').firstElementChild.textContent.split('Venue ')[1].trim();
     };
-    return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_promise___default.a.all([].concat(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_toConsumableArray___default()(document.querySelectorAll('.sharedFormField .detailViewTextWithLinks a'))).map(function (link) {
+    return __WEBPACK_IMPORTED_MODULE_2_babel_runtime_core_js_promise___default.a.all([].concat(__WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_toConsumableArray___default()(document.querySelectorAll('.sharedFormField .detailViewTextWithLinks a'))).map(function (link) {
       if (link.href.includes('https://airtable.com')) {
         // Side-Effect: Assign recurEventLink for formModal while already iterating links
         return Object.defineProperty(AirTableFormifier, 'recurEventLink', { value: link.href });
@@ -2752,22 +2758,85 @@ var AirTableFormifier = {
   setIframes: function setIframes() {
     var _this5 = this;
 
-    var formContainer = document.querySelector('.formFieldAndSubmitContainer');
-    var formHeader = document.querySelector('.formHeader');
-    formContainer.prepend(formHeader);
-    formContainer.insertAdjacentHTML('afterend', this.templates.iframeContainer);
-    var iframeContainer = document.getElementById('iframeContainer');
+    return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator___default()(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee() {
+      var formContainer, formHeader, iframeContainer;
+      return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              formContainer = document.querySelector('.formFieldAndSubmitContainer');
+              formHeader = document.querySelector('.formHeader');
 
-    return this.buildVenueTabs(iframeContainer).then(function () {
-      return iframeContainer.insertAdjacentHTML('afterbegin', _this5.templates.iframeNavigator(_this5.linkTabs));
-    });
+              formContainer.prepend(formHeader);
+              formContainer.insertAdjacentHTML('afterend', _this5.templates.iframeContainer);
+              iframeContainer = document.getElementById('iframeContainer');
+              _context.next = 7;
+              return _this5.buildVenueTabs(iframeContainer);
+
+            case 7:
+              return _context.abrupt('return', iframeContainer.insertAdjacentHTML('afterbegin', _this5.templates.iframeNavigator(_this5.linkTabs)));
+
+            case 8:
+            case 'end':
+              return _context.stop();
+          }
+        }
+      }, _callee, _this5);
+    }))();
+  },
+  combineIframeTabEvents: function combineIframeTabEvents() {
+    console.log('combineIframeTabEvents::what it sounds like....');
+    return this;
+  },
+  tabEvents: function tabEvents() {
+    console.log('set tab events');
+    return this;
+  },
+  iframeEvents: function iframeEvents() {
+    console.log('set iframe events');
+    return this;
+  },
+  focusFirstIframe: function focusFirstIframe() {
+    console.log(this.linkTabs);
+    return this;
   },
   init: function init() {
-    // DOM JS Methods need to wait shortly after window for load
-    this.clearInstructions();
-    this.descriptionLimit();
-    this.removeUnwantedElements();
-    this.setIframes();
+    var _this6 = this;
+
+    return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator___default()(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee2() {
+      return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return _this6.clearInstructions().toggleInstructions();
+
+            case 2:
+              _context2.next = 4;
+              return _this6.descriptionLimit();
+
+            case 4:
+              _context2.next = 6;
+              return _this6.removeUnwantedElements();
+
+            case 6:
+              _context2.next = 8;
+              return _this6.setIframes();
+
+            case 8:
+              _context2.next = 10;
+              return _this6.focusFirstIframe();
+
+            case 10:
+              return _context2.abrupt('return', _this6);
+
+            case 11:
+            case 'end':
+              return _context2.stop();
+          }
+        }
+      }, _callee2, _this6);
+    }))();
   }
 };
 
