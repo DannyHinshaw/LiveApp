@@ -3,6 +3,21 @@ export const AirTableFormifier = {
   templates: {
     /* eslint-disable key-spacing */
     iframeContainer: `<div id='iframeContainer'></div>`,
+    /* eslint-disable indent*/
+    iframeNavigator: tabs => `
+                        <nav class="tabs-nav">
+                          ${tabs.map((tab) => { // eslint-disable-line arrow-body-style
+                            return `
+                              <div class="tab">
+                                <div class="tab-box">
+                                  <i class="fa fa-${tab.type.toLowerCase()}">
+                                    <span>${tab.type}</span>
+                                  </i>
+                                </div>
+                              </div>`;
+                          }).join('')}             
+                        </nav>`,
+    /* eslint-enable indent*/
     instructions   : `<div class='toggle-instructions'>
                         <span class='toggle-icon'> + </span> Click to toggle instructions
                       </div>
@@ -124,9 +139,11 @@ export const AirTableFormifier = {
     const formHeader = document.querySelector('.formHeader');
     formContainer.prepend(formHeader);
     formContainer.insertAdjacentHTML('afterend', this.templates.iframeContainer);
+    const iframeContainer = document.getElementById('iframeContainer');
 
-    return this.buildVenueTabs(document.getElementById('iframeContainer'))
-      .then(() => console.log('create nav here', this.linkTabs)); // eslint-disable-line no-console
+    return this.buildVenueTabs(iframeContainer)
+      .then(() => iframeContainer
+        .prependChild(this.templates.iframeNavigator(this.linkTabs)));
   },
 
   init() {
