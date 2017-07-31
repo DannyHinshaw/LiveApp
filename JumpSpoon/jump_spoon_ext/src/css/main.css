@@ -106,8 +106,9 @@ iframe {
 /* IFRAME NAV-TABS */
 .tabs-nav {
 	height:45px;
-	padding: 0 0 0 0;
 	overflow:visible;
+	padding: 0 0 0 0;
+	position: absolute;
 }
 .tab {
 	width:200px;
@@ -116,7 +117,6 @@ iframe {
 	float:left;
 	margin:0 -15px 0 0;
 }
-
 .tab-box {
 	box-shadow: 0 0 2px  #fff inset;
 	background: #fff;
@@ -128,24 +128,25 @@ iframe {
 	text-align: center;
 	-webkit-transform: perspective(100px) rotateX(30deg);
 	-moz-transform: perspective(100px) rotateX(30deg);
+	-ms-transform: perspective(100px) rotateX(30deg);
+	-o-transform: perspective(100px) rotateX(30deg);
+	transform: perspective(100px) rotateX(30deg);
 }
-
 .tab.active {
 	z-index:40;
 	position:relative;
 	padding-bottom:1px;
 }
-
 .tab.active .tab-box{
 	background-color: #eee;
-@include background-image(linear-gradient(top, #ccc , #ddd 3%, rgba(#eee, 0.5)  ));
+	background-image(linear-gradient(top, #ccc , #ddd 3%, rgba(#eee, 0.5)  ));
 	box-shadow: 0 0 2px 0 #fff inset;
 }
-
-i.fa {
-	font-size: 1.5rem !important;
-	padding: .5rem 0 0 1.5rem;
-	transform: none !important;
-	-moz-transform: none !important;
-	-webkit-transform: none !important;
+.tab-head {
+	font-size: 1rem !important;
+	-webkit-transform: perspective(100px) rotateX(-22.5deg) !important;
+	-moz-transform: perspective(100px) rotateX(-22.5deg) !important;
+	-ms-transform: perspective(100px) rotateX(-22.5deg) !important;
+	-o-transform: perspective(100px) rotateX(-22.5deg) !important;
+	transform: perspective(100px) rotateX(-22.5deg) !important;
 }

@@ -3,16 +3,20 @@ export const AirTableFormifier = {
   templates: {
     /* eslint-disable key-spacing */
     iframeContainer: `<div id='iframeContainer'></div>`,
-    /* eslint-disable indent*/
+    /* eslint-disable indent, max-len*/
     iframeNavigator: tabs => `
                         <nav class="tabs-nav">
                           ${tabs.map((tab) => { // eslint-disable-line arrow-body-style
                             return `
                               <div class="tab">
                                 <div class="tab-box">
-                                  <i class="fa fa-${tab.type.toLowerCase()}">
-                                    <span>${tab.type}</span>
-                                  </i>
+                                  <div class="tab-head">                                    
+                                    <span>
+                                      <img aria-hidden="true" class="icon" 
+                                      src="https://www.google.com/s2/favicons?domain_url=${tab.href.toLowerCase().trim()}">
+                                        ${tab.type}
+                                    </span>
+                                  </div>
                                 </div>
                               </div>`;
                           }).join('')}             

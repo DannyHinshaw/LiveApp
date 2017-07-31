@@ -5,13 +5,12 @@ const VersionFilePlugin = require('webpack-version-file-plugin');
 
 const config = require('./config.js');
 
-
 module.exports = _.merge({}, config, {
   output: {
     path: path.resolve(__dirname, '../build/dev'),
   },
 
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   plugins: [
     new CopyWebpackPlugin([
       { from: './src' }
