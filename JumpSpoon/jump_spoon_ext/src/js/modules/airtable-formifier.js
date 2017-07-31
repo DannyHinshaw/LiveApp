@@ -143,7 +143,7 @@ export const AirTableFormifier = {
 
     return this.buildVenueTabs(iframeContainer)
       .then(() => iframeContainer
-        .prependChild(this.templates.iframeNavigator(this.linkTabs)));
+        .insertAdjacentHTML('afterbegin', this.templates.iframeNavigator(this.linkTabs)));
   },
 
   init() {
