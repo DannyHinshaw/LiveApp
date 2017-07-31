@@ -143,10 +143,17 @@ iframe {
 	box-shadow: 0 0 2px 0 #fff inset;
 }
 .tab-head {
-	font-size: 1rem !important;
-	-webkit-transform: perspective(100px) rotateX(-22.5deg) !important;
-	-moz-transform: perspective(100px) rotateX(-22.5deg) !important;
-	-ms-transform: perspective(100px) rotateX(-22.5deg) !important;
-	-o-transform: perspective(100px) rotateX(-22.5deg) !important;
-	transform: perspective(100px) rotateX(-22.5deg) !important;
+	font-size: 1.25rem !important;
+	padding-left: 2rem;
+	position: absolute;
+	top: 18px;
+	-webkit-transform: perspective(0px) rotateX(-30deg) !important;
+	-moz-transform: perspective(0px) rotateX(-30deg) !important;
+	-ms-transform: perspective(0px) rotateX(-30deg) !important;
+	-o-transform: perspective(0px) rotateX(-30deg) !important;
+	transform: perspective(0px) rotateX(-30deg) !important;
+}
+.icon {
+	height: 1.25rem;
+	width: 1.25rem;
 }

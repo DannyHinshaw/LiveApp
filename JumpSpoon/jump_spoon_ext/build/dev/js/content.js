@@ -2614,7 +2614,7 @@ var AirTableFormifier = {
     iframeNavigator: function iframeNavigator(tabs) {
       return '\n                        <nav class="tabs-nav">\n                          ' + tabs.map(function (tab) {
         // eslint-disable-line arrow-body-style
-        return '\n                              <div class="tab">\n                                <div class="tab-box">\n                                  <div class="tab-head">                                    \n                                    <span>\n                                      <img aria-hidden="true" class="icon" \n                                      src="https://www.google.com/s2/favicons?domain_url=' + tab.href.toLowerCase().trim() + '">\n                                        ' + tab.type + '\n                                    </span>\n                                  </div>\n                                </div>\n                              </div>';
+        return '\n                              <div class="tab">\n                                <div class="tab-box"></div>\n                                <div class="tab-head">\n                                <span>\n                                  <img aria-hidden="true" class="icon" \n                                  src="https://www.google.com/s2/favicons?domain_url=' + tab.href.toLowerCase().trim() + '">\n                                  ' + tab.type + '\n                                  </span>\n                                </div>\n                              </div>';
       }).join('') + '             \n                        </nav>';
     },
     /* eslint-enable indent*/

@@ -9,14 +9,13 @@ export const AirTableFormifier = {
                           ${tabs.map((tab) => { // eslint-disable-line arrow-body-style
                             return `
                               <div class="tab">
-                                <div class="tab-box">
-                                  <div class="tab-head">                                    
-                                    <span>
-                                      <img aria-hidden="true" class="icon" 
-                                      src="https://www.google.com/s2/favicons?domain_url=${tab.href.toLowerCase().trim()}">
-                                        ${tab.type}
-                                    </span>
-                                  </div>
+                                <div class="tab-box"></div>
+                                <div class="tab-head">
+                                <span>
+                                  <img aria-hidden="true" class="icon" 
+                                  src="https://www.google.com/s2/favicons?domain_url=${tab.href.toLowerCase().trim()}">
+                                  ${tab.type}
+                                  </span>
                                 </div>
                               </div>`;
                           }).join('')}             
