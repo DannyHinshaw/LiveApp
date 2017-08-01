@@ -88,6 +88,7 @@
 }
 /* RIGHT PANEL */
 #iframeContainer {
+	background-color: #eee;
 	bottom: 0;
 	display: inline-block;
 	float: right;
@@ -109,6 +110,8 @@ iframe.active {
 }
 /* IFRAME NAV-TABS */
 .tabs-nav {
+	background-color: #525161;
+	display: flex;
 	height: 45px;
 	overflow: visible;
 	padding: 0 0 0 0;
@@ -136,12 +139,15 @@ iframe.active {
 	-o-transform: perspective(100px) rotateX(30deg);
 	transform: perspective(100px) rotateX(30deg);
 }
+.tab-box, .tab-head {
+	cursor: pointer;
+}
 .tab.active {
 	z-index: 40;
 	position: relative;
 	padding-bottom: 1px;
 }
-.tab.active .tab-box{
+.tab.active .tab-box {
 	background-color: #eee;
 	background-image(linear-gradient(top, #ccc , #ddd 3%, rgba(#eee, 0.5)  ));
 	box-shadow: 0 0 2px 0 #fff inset;

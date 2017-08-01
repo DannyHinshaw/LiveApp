@@ -1,4 +1,4 @@
-export const AirTableFormifier = {
+export const UI = {
   // Custom Element Templates
   templates: {
     /* eslint-disable key-spacing */
@@ -7,9 +7,10 @@ export const AirTableFormifier = {
     iframeNavigator: tabs => `
                         <nav class="tabs-nav">
                           ${tabs.map((tab) => { // eslint-disable-line arrow-body-style
+
                             return `
-                              <div class="tab">
-                                <div class="tab-box"></div>
+                              <div class="tab ${tab.type}">
+                                <div class="tab-box ${tab.type}"></div>
                                 <div class="tab-head">
                                 <span>
                                   <img aria-hidden="true" class="icon" 
@@ -79,12 +80,12 @@ export const AirTableFormifier = {
   /**
    * Tail of promise creating stack for browsing tabs
    * @param tab
-   * @param callback
+   * @param fn
    * @returns {*}
    */
-  createTabs(tab, callback) {
+  createTabs(tab, fn) {
     this.linkTabs.push(tab);
-    return callback();
+    return fn();
   },
 
   /**
@@ -108,11 +109,12 @@ export const AirTableFormifier = {
    */
   getLinks() {
     const getName = l => l.closest('.sharedFormField').firstElementChild.textContent.split('Venue ')[1].trim();
+
     return Promise.all([...document.querySelectorAll('.sharedFormField .detailViewTextWithLinks a')]
       .map((link) => {
         if (link.href.includes('https://airtable.com')) {
           // Side-Effect: Assign recurEventLink for formModal while already iterating links
-          return Object.defineProperty(AirTableFormifier, 'recurEventLink', { value: link.href });
+          return Object.defineProperty(UI, 'recurEventLink', { value: link.href });
         }
         return { type: getName(link), href: link.href };
       }).filter(link => link.type));
@@ -134,6 +136,36 @@ export const AirTableFormifier = {
         tabs.forEach(tab => this.generateIframes(container, tab)));
   },
 
+  focusIframeTabSet(tabIframeSet) {
+    return [...tabIframeSet].forEach(combo => combo.classList.toggle('active'));
+  },
+
+  assignTabControls([tab, iframe]) {
+    console.log(tab, iframe);
+    // return [...tab.selectAllChildren, tab].addEventListener('click', (e) => {
+    return tab.addEventListener('click', (e) => {
+      const _target = e.target.classList.contains('tab') ? e.target : e.target.closest('.tab');
+      return console.log(_target);
+    });
+  },
+
+  combineIframeTabEvents() {
+    return this.linkTabs.forEach((tab, i) => {
+
+      const tabIframeSet = [...document.querySelectorAll(`.${tab.type}:not(.tab-box)`)];
+
+      console.log('combineIframeTabEvents::\n', tabIframeSet);
+      if (i === 0) {
+        // Focus the first frame as we iterate
+        UI.focusIframeTabSet(tabIframeSet);
+      } else if (i === 1) {
+        // TODO: This is a hack for the reversed tab order. Really should be fixed in CSS
+        document.querySelector(`.tab.${tab.type}`).setAttribute('style', 'z-index: 1;');
+      }
+      return UI.assignTabControls(tabIframeSet);
+    });
+  },
+
   /**
    * Starts the method chain to create/add iframes to UI
    * @returns {*}
@@ -146,16 +178,11 @@ export const AirTableFormifier = {
     const iframeContainer = document.getElementById('iframeContainer');
 
     await this.buildVenueTabs(iframeContainer);
-    return iframeContainer
-      .insertAdjacentHTML('afterbegin', this.templates.iframeNavigator(this.linkTabs));
+    await iframeContainer.insertAdjacentHTML('afterbegin', this.templates.iframeNavigator(this.linkTabs));
+    return this.combineIframeTabEvents();
   },
 
-  combineIframeTabEvents() {
-    console.log('combineIframeTabEvents::what it sounds like....');
-    return this;
-  },
-
-  tabEvents() {
+  tabClickEvents() {
     console.log('set tab events');
     return this;
   },
@@ -165,18 +192,12 @@ export const AirTableFormifier = {
     return this;
   },
 
-  focusFirstIframe() {
-    console.log(this.linkTabs);
-    return this;
-  },
-
   async init() {
     // DOM JS Methods need to wait shortly after window for load
     await this.clearInstructions().toggleInstructions();
     await this.descriptionLimit();
     await this.removeUnwantedElements();
     await this.setIframes();
-    await this.focusFirstIframe();
     return this;
   }
 };

@@ -1,5 +1,5 @@
 import { AJAXListener } from './modules/ajax-listener';
-import { AirTableFormifier } from './modules/airtable-formifier';
+import { UI } from './modules/airtable-formifier';
 /*
  import handlers from './modules/handlers';
  import msg from './modules/msg';
@@ -26,7 +26,7 @@ async function waitForAJAX() {
   await AJAXListener.loadEvent();
   // Initialize settings
   // Prototypal object creation with object factory function
-  return Object.create(AirTableFormifier);
+  return Object.create(UI);
 }
 
 waitForAJAX().then(formifier => formifier.init());
