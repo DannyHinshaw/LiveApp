@@ -1,12 +1,16 @@
+/* eslint-disable padded-blocks */
 export const UI = {
+
   // Custom Element Templates
   templates: {
+
     /* eslint-disable key-spacing */
     iframeContainer: `<div id='iframeContainer'></div>`,
-    /* eslint-disable indent, max-len*/
+
+    /* eslint-disable arrow-body-style, indent, max-len, padded-blocks */
     iframeNavigator: tabs => `
                         <nav class="tabs-nav">
-                          ${tabs.map((tab) => { // eslint-disable-line arrow-body-style
+                          ${tabs.map((tab) => {
 
                             return `
                               <div class="tab ${tab.type}">
@@ -21,19 +25,28 @@ export const UI = {
                               </div>`;
                           }).join('')}             
                         </nav>`,
-    /* eslint-enable indent*/
+    /* eslint-enable arrow-body-style, indent, max-len */
+
     instructions   : `<div class='toggle-instructions'>
                         <span class='toggle-icon'> + </span> Click to toggle instructions
                       </div>
                       <br>`,
+
     venueIdClipped : `<span style='color: #61ca61; display: block;'>
                         <br>Copied to clipboard!
                       </span>`
     /* eslint-enable key-spacing */
   },
 
+  /**
+   * Cached array for storing link/iframe info
+   */
   linkTabs: [],
 
+  /**
+   * Attaches the click events for instruction block toggling
+   * @returns {UI}
+   */
   toggleInstructions() {
     const header = document.querySelector('.formHeader');
     const instructions = document.querySelector('.formDescription');
@@ -54,6 +67,10 @@ export const UI = {
     return this;
   },
 
+  /**
+   * Style method for turning large instruction box to toggle
+   * @returns {UI}
+   */
   clearInstructions() {
     const formName = document.querySelector('.formName');
     formName.insertAdjacentHTML('afterend', this.templates.instructions);
@@ -64,13 +81,17 @@ export const UI = {
     return this;
   },
 
+  /**
+   * Fixes formatting where descriptions are too long and screw up grid
+   */
   descriptionLimit() {
-    // Fixes formatting where descriptions are too long and screw up grid
-    return [...document.querySelectorAll('.description')].forEach((d) => { // eslint-disable-line arrow-body-style
-      return d.textContent.length > 52 ? d.parentElement.setAttribute('style', 'display:block;') : this;
-    });
+    return [...document.querySelectorAll('.description')].forEach(d => // eslint-disable-line no-confusing-arrow
+      d.textContent.length > 52 ? d.parentElement.setAttribute('style', 'display:block;') : this);
   },
 
+  /**
+   * Remove random unnecessary elements that take up too much space on the original form
+   */
   removeUnwantedElements() {
     [document.querySelector('.formCoverImageContainer'),
       ...document.querySelectorAll('.createYourOwnFormWithAirtable')]
@@ -130,36 +151,61 @@ export const UI = {
     return this.createTabs(tab, callback);
   },
 
-  buildVenueTabs(container) {
-    return this.getLinks()
-      .then(tabs =>
-        tabs.forEach(tab => this.generateIframes(container, tab)));
+  /**
+   * Retrieves available venue links from the form to create the iframe tabs
+   * @param container: iframe container
+   */
+  async buildVenueTabs(container) {
+    const tabs = await this.getLinks();
+    return tabs.forEach(tab => this.generateIframes(container, tab));
   },
 
+  /**
+   * Adds 'active' class to selected tabs/iframes
+   * @param tabIframeSet: array of matching tab/iframe pairs
+   */
   focusIframeTabSet(tabIframeSet) {
-    return [...tabIframeSet].forEach(combo => combo.classList.toggle('active'));
+    return [...tabIframeSet].forEach(el => el.classList.add('active'));
   },
 
+  /**
+   * Iterates through tab/iframe pairs and controls focus
+   * @param tab: current tab in iteration
+   * @param iframe: current iframe in iteration
+   */
   assignTabControls([tab, iframe]) {
-    console.log(tab, iframe);
-    // return [...tab.selectAllChildren, tab].addEventListener('click', (e) => {
     return tab.addEventListener('click', (e) => {
+
       const _target = e.target.classList.contains('tab') ? e.target : e.target.closest('.tab');
-      return console.log(_target);
+      const _targetType = _target.classList[1];
+
+      if (!_target.classList.contains('active')) {
+
+        this.focusIframeTabSet([_target, iframe]);
+
+        [...document.querySelectorAll('.active')].forEach((node) => {
+          if (!node.classList.contains(_targetType)) {
+            node.classList.remove('active');
+          }
+        });
+      }
+      return this;
     });
   },
 
+  /**
+   * Sets the relationship array pairs for tabs and their respective iframes
+   */
   combineIframeTabEvents() {
     return this.linkTabs.forEach((tab, i) => {
 
       const tabIframeSet = [...document.querySelectorAll(`.${tab.type}:not(.tab-box)`)];
 
-      console.log('combineIframeTabEvents::\n', tabIframeSet);
       if (i === 0) {
         // Focus the first frame as we iterate
         UI.focusIframeTabSet(tabIframeSet);
       } else if (i === 1) {
-        // TODO: This is a hack for the reversed tab order. Really should be fixed in CSS
+        // FIXME: This is a hack for the reversed tab order. Really should be fixed in CSS
         document.querySelector(`.tab.${tab.type}`).setAttribute('style', 'z-index: 1;');
       }
       return UI.assignTabControls(tabIframeSet);
@@ -182,16 +228,10 @@ export const UI = {
     return this.combineIframeTabEvents();
   },
 
-  tabClickEvents() {
-    console.log('set tab events');
-    return this;
-  },
-
-  iframeEvents() {
-    console.log('set iframe events');
-    return this;
-  },
-
+  /**
+   * Initializes the Object/UI and calls the base methods for setup
+   * @returns {Promise.<UI>}
+   */
   async init() {
     // DOM JS Methods need to wait shortly after window for load
     await this.clearInstructions().toggleInstructions();
@@ -200,4 +240,5 @@ export const UI = {
     await this.setIframes();
     return this;
   }
+
 };

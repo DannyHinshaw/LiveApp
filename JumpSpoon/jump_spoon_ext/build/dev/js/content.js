@@ -2599,12 +2599,12 @@ var AJAXListener = {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UI; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(76);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_slicedToArray__ = __webpack_require__(111);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_slicedToArray___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_slicedToArray__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_slicedToArray__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_slicedToArray___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_slicedToArray__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_core_js_promise__ = __webpack_require__(70);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_core_js_promise___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_babel_runtime_core_js_promise__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_babel_runtime_helpers_toConsumableArray__ = __webpack_require__(103);
@@ -2614,27 +2614,39 @@ var AJAXListener = {
 
 
 
+/* eslint-disable padded-blocks */
 var UI = {
+
   // Custom Element Templates
   templates: {
+
     /* eslint-disable key-spacing */
     iframeContainer: '<div id=\'iframeContainer\'></div>',
-    /* eslint-disable indent, max-len*/
+
+    /* eslint-disable arrow-body-style, indent, max-len, padded-blocks */
     iframeNavigator: function iframeNavigator(tabs) {
       return '\n                        <nav class="tabs-nav">\n                          ' + tabs.map(function (tab) {
-        // eslint-disable-line arrow-body-style
 
         return '\n                              <div class="tab ' + tab.type + '">\n                                <div class="tab-box ' + tab.type + '"></div>\n                                <div class="tab-head">\n                                <span>\n                                  <img aria-hidden="true" class="icon" \n                                  src="https://www.google.com/s2/favicons?domain_url=' + tab.href.toLowerCase().trim() + '">\n                                  ' + tab.type + '\n                                  </span>\n                                </div>\n                              </div>';
       }).join('') + '             \n                        </nav>';
     },
-    /* eslint-enable indent*/
+    /* eslint-enable arrow-body-style, indent, max-len */
+
     instructions: '<div class=\'toggle-instructions\'>\n                        <span class=\'toggle-icon\'> + </span> Click to toggle instructions\n                      </div>\n                      <br>',
+
     venueIdClipped: '<span style=\'color: #61ca61; display: block;\'>\n                        <br>Copied to clipboard!\n                      </span>'
     /* eslint-enable key-spacing */
   },
 
+  /**
+   * Cached array for storing link/iframe info
+   */
   linkTabs: [],
 
+  /**
+   * Attaches the click events for instruction block toggling
+   * @returns {UI}
+   */
   toggleInstructions: function toggleInstructions() {
     var header = document.querySelector('.formHeader');
     var instructions = document.querySelector('.formDescription');
@@ -2654,6 +2666,12 @@ var UI = {
     }
     return this;
   },
+
+
+  /**
+   * Style method for turning large instruction box to toggle
+   * @returns {UI}
+   */
   clearInstructions: function clearInstructions() {
     var formName = document.querySelector('.formName');
     formName.insertAdjacentHTML('afterend', this.templates.instructions);
@@ -2663,15 +2681,25 @@ var UI = {
     document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
     return this;
   },
+
+
+  /**
+   * Fixes formatting where descriptions are too long and screw up grid
+   */
   descriptionLimit: function descriptionLimit() {
     var _this = this;
 
-    // Fixes formatting where descriptions are too long and screw up grid
     return [].concat(__WEBPACK_IMPORTED_MODULE_4_babel_runtime_helpers_toConsumableArray___default()(document.querySelectorAll('.description'))).forEach(function (d) {
-      // eslint-disable-line arrow-body-style
-      return d.textContent.length > 52 ? d.parentElement.setAttribute('style', 'display:block;') : _this;
+      return (// eslint-disable-line no-confusing-arrow
+        d.textContent.length > 52 ? d.parentElement.setAttribute('style', 'display:block;') : _this
+      );
     });
   },
+
+
+  /**
+   * Remove random unnecessary elements that take up too much space on the original form
+   */
   removeUnwantedElements: function removeUnwantedElements() {
     var _this2 = this;
 
@@ -2745,43 +2773,96 @@ var UI = {
     };
     return this.createTabs(tab, callback);
   },
+
+
+  /**
+   * Retrieves available venue links from the form to create the iframe tabs
+   * @param container: iframe container
+   */
   buildVenueTabs: function buildVenueTabs(container) {
     var _this4 = this;
 
-    return this.getLinks().then(function (tabs) {
-      return tabs.forEach(function (tab) {
-        return _this4.generateIframes(container, tab);
-      });
-    });
+    return __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default()(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.mark(function _callee() {
+      var tabs;
+      return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _this4.getLinks();
+
+            case 2:
+              tabs = _context.sent;
+              return _context.abrupt('return', tabs.forEach(function (tab) {
+                return _this4.generateIframes(container, tab);
+              }));
+
+            case 4:
+            case 'end':
+              return _context.stop();
+          }
+        }
+      }, _callee, _this4);
+    }))();
   },
+
+
+  /**
+   * Adds 'active' class to selected tabs/iframes
+   * @param tabIframeSet: array of matching tab/iframe pairs
+   */
   focusIframeTabSet: function focusIframeTabSet(tabIframeSet) {
-    return [].concat(__WEBPACK_IMPORTED_MODULE_4_babel_runtime_helpers_toConsumableArray___default()(tabIframeSet)).forEach(function (combo) {
-      return combo.classList.toggle('active');
+    return [].concat(__WEBPACK_IMPORTED_MODULE_4_babel_runtime_helpers_toConsumableArray___default()(tabIframeSet)).forEach(function (el) {
+      return el.classList.add('active');
     });
   },
+
+
+  /**
+   * Iterates through tab/iframe pairs and controls focus
+   * @param tab: current tab in iteration
+   * @param iframe: current iframe in iteration
+   */
   assignTabControls: function assignTabControls(_ref2) {
-    var _ref3 = __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_slicedToArray___default()(_ref2, 2),
+    var _this5 = this;
+
+    var _ref3 = __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_slicedToArray___default()(_ref2, 2),
         tab = _ref3[0],
         iframe = _ref3[1];
 
-    console.log(tab, iframe);
-    // return [...tab.selectAllChildren, tab].addEventListener('click', (e) => {
     return tab.addEventListener('click', function (e) {
+
       var _target = e.target.classList.contains('tab') ? e.target : e.target.closest('.tab');
-      return console.log(_target);
+      var _targetType = _target.classList[1];
+
+      if (!_target.classList.contains('active')) {
+
+        _this5.focusIframeTabSet([_target, iframe]);
+
+        [].concat(__WEBPACK_IMPORTED_MODULE_4_babel_runtime_helpers_toConsumableArray___default()(document.querySelectorAll('.active'))).forEach(function (node) {
+          if (!node.classList.contains(_targetType)) {
+            node.classList.remove('active');
+          }
+        });
+      }
+      return _this5;
     });
   },
+
+
+  /**
+   * Sets the relationship array pairs for tabs and their respective iframes
+   */
   combineIframeTabEvents: function combineIframeTabEvents() {
     return this.linkTabs.forEach(function (tab, i) {
 
       var tabIframeSet = [].concat(__WEBPACK_IMPORTED_MODULE_4_babel_runtime_helpers_toConsumableArray___default()(document.querySelectorAll('.' + tab.type + ':not(.tab-box)')));
 
-      console.log('combineIframeTabEvents::\n', tabIframeSet);
       if (i === 0) {
         // Focus the first frame as we iterate
         UI.focusIframeTabSet(tabIframeSet);
       } else if (i === 1) {
-        // TODO: This is a hack for the reversed tab order. Really should be fixed in CSS
+        // FIXME: This is a hack for the reversed tab order. Really should be fixed in CSS
         document.querySelector('.tab.' + tab.type).setAttribute('style', 'z-index: 1;');
       }
       return UI.assignTabControls(tabIframeSet);
@@ -2794,78 +2875,76 @@ var UI = {
    * @returns {*}
    */
   setIframes: function setIframes() {
-    var _this5 = this;
+    var _this6 = this;
 
-    return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator___default()(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee() {
+    return __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default()(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.mark(function _callee2() {
       var formContainer, formHeader, iframeContainer;
-      return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
+      return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
               formContainer = document.querySelector('.formFieldAndSubmitContainer');
               formHeader = document.querySelector('.formHeader');
 
               formContainer.prepend(formHeader);
-              formContainer.insertAdjacentHTML('afterend', _this5.templates.iframeContainer);
+              formContainer.insertAdjacentHTML('afterend', _this6.templates.iframeContainer);
               iframeContainer = document.getElementById('iframeContainer');
-              _context.next = 7;
-              return _this5.buildVenueTabs(iframeContainer);
+              _context2.next = 7;
+              return _this6.buildVenueTabs(iframeContainer);
 
             case 7:
-              _context.next = 9;
-              return iframeContainer.insertAdjacentHTML('afterbegin', _this5.templates.iframeNavigator(_this5.linkTabs));
+              _context2.next = 9;
+              return iframeContainer.insertAdjacentHTML('afterbegin', _this6.templates.iframeNavigator(_this6.linkTabs));
 
             case 9:
-              return _context.abrupt('return', _this5.combineIframeTabEvents());
+              return _context2.abrupt('return', _this6.combineIframeTabEvents());
 
             case 10:
-            case 'end':
-              return _context.stop();
-          }
-        }
-      }, _callee, _this5);
-    }))();
-  },
-  tabClickEvents: function tabClickEvents() {
-    console.log('set tab events');
-    return this;
-  },
-  iframeEvents: function iframeEvents() {
-    console.log('set iframe events');
-    return this;
-  },
-  init: function init() {
-    var _this6 = this;
-
-    return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_asyncToGenerator___default()(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee2() {
-      return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return _this6.clearInstructions().toggleInstructions();
-
-            case 2:
-              _context2.next = 4;
-              return _this6.descriptionLimit();
-
-            case 4:
-              _context2.next = 6;
-              return _this6.removeUnwantedElements();
-
-            case 6:
-              _context2.next = 8;
-              return _this6.setIframes();
-
-            case 8:
-              return _context2.abrupt('return', _this6);
-
-            case 9:
             case 'end':
               return _context2.stop();
           }
         }
       }, _callee2, _this6);
+    }))();
+  },
+
+
+  /**
+   * Initializes the Object/UI and calls the base methods for setup
+   * @returns {Promise.<UI>}
+   */
+  init: function init() {
+    var _this7 = this;
+
+    return __WEBPACK_IMPORTED_MODULE_2_babel_runtime_helpers_asyncToGenerator___default()(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.mark(function _callee3() {
+      return __WEBPACK_IMPORTED_MODULE_1_babel_runtime_regenerator___default.a.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return _this7.clearInstructions().toggleInstructions();
+
+            case 2:
+              _context3.next = 4;
+              return _this7.descriptionLimit();
+
+            case 4:
+              _context3.next = 6;
+              return _this7.removeUnwantedElements();
+
+            case 6:
+              _context3.next = 8;
+              return _this7.setIframes();
+
+            case 8:
+              return _context3.abrupt('return', _this7);
+
+            case 9:
+            case 'end':
+              return _context3.stop();
+          }
+        }
+      }, _callee3, _this7);
     }))();
   }
 };

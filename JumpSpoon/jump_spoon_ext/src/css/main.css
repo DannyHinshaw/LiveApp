@@ -116,6 +116,7 @@ iframe.active {
 	overflow: visible;
 	padding: 0 0 0 0;
 	position: absolute;
+	width: 100%
 }
 .tab {
 	width: 200px;
