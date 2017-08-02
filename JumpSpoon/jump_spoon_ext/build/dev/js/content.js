@@ -1191,6 +1191,9 @@ var waitForAJAX = function () {
   };
 }();
 
+// Initi
+
+
 
 
 /*
@@ -1207,9 +1210,7 @@ var waitForAJAX = function () {
 // instance of given context is created / destroyed, or you want to be able to
 // issue command requests from this context), you may simply omit the
 // `handlers` parameter for good when invoking msg.init()
-console.log('LiveApp formifier running...');
-
-waitForAJAX().then(function (formifier) {
+console.log('LiveApp formifier running...');waitForAJAX().then(function (formifier) {
   return formifier.init();
 });
 

@@ -29,4 +29,5 @@ async function waitForAJAX() {
   return Object.create(UI);
 }
 
+// Initi
 waitForAJAX().then(formifier => formifier.init());

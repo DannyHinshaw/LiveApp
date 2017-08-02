@@ -1,6 +1,6 @@
 {
   "name": "jump_spoon",
-  "version": "0.3.0",
+  "version": "1.1.0",
   "description": "Chrome extension for LiveApp data collection 'Jump and Spoon' workers.",
   "engines": {
     "node": "7.0.0",

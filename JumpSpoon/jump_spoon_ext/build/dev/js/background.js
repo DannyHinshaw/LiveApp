@@ -119,6 +119,7 @@ helloWorld();
 
 var HEADERS_TO_STRIP_LOWERCASE = ['content-security-policy', 'x-frame-options', 'x-xss-protection'];
 
+// CORS Support for iframes and XHR's
 chrome.webRequest.onHeadersReceived.addListener(function (details) {
   // eslint-disable-line arrow-body-style, max-len
   return {
@@ -128,14 +129,6 @@ chrome.webRequest.onHeadersReceived.addListener(function (details) {
     })
   };
 }, { urls: ['<all_urls>'] }, ['blocking', 'responseHeaders']);
-
-// Used to let content script know when to call init() method (seems to have no effect))
-/*
-chrome.webRequest.onCompleted.addListener((details) => {
-  /* Process the XHR response */ /*
-                                 logEvent.bind(null, details);
-                                 }, { urls: ['<all_urls>'] });
-                                 */
 
 /***/ })
 
