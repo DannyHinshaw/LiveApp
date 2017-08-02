@@ -1,32 +1,57 @@
-export const AirTableFormifier = {
+/* eslint-disable padded-blocks */
+export const UI = {
 
-  // Custom CSS Styles
+  // Custom Element Templates
   templates: {
+
+    /* eslint-disable key-spacing */
     iframeContainer: `<div id='iframeContainer'></div>`,
-    instructions   : `<div class='toggle-instructions'>` + // eslint-disable-line key-spacing
-    `<span class='toggle-icon'> + </span> Click to toggle instructions
+
+    /* eslint-disable arrow-body-style, indent, max-len, padded-blocks */
+    iframeNavigator: tabs => `
+                        <nav class="tabs-nav">
+                          ${tabs.map((tab) => {
+
+                            return `
+                              <div class="tab ${tab.type}">
+                                <div class="tab-box ${tab.type}"></div>
+                                <div class="tab-head">
+                                <span>
+                                  <img aria-hidden="true" class="icon" 
+                                  src="https://www.google.com/s2/favicons?domain_url=${tab.href.toLowerCase().trim()}">
+                                  ${tab.type}
+                                  </span>
+                                </div>
+                              </div>`;
+                          }).join('')}             
+                        </nav>`,
+    /* eslint-enable arrow-body-style, indent, max-len */
+
+    instructions   : `<div class='toggle-instructions'>
+                        <span class='toggle-icon'> + </span> Click to toggle instructions
                       </div>
                       <br>`,
-    venueIdClipped : `<span style='color: #61ca61; display: block;'>` +  // eslint-disable-line key-spacing
-    `<br>Copied to clipboard!
+
+    venueIdClipped : `<span style='color: #61ca61; display: block;'>
+                        <br>Copied to clipboard!
                       </span>`
+    /* eslint-enable key-spacing */
   },
 
-  clearInstructions() {
-    const formName = document.querySelector('.formName');
-    formName.insertAdjacentHTML('afterend', this.templates.instructions);
+  /**
+   * Cached array for storing link/iframe info
+   */
+  linkTabs: [],
 
-    // Remove instruction block and assign toggle function
-    document.querySelector('.formDescription').style.display = 'none';
-    document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
-  },
-
+  /**
+   * Attaches the click events for instruction block toggling
+   * @returns {UI}
+   */
   toggleInstructions() {
     const header = document.querySelector('.formHeader');
     const instructions = document.querySelector('.formDescription');
     const toggler = document.querySelector('.toggle-instructions');
     const toggleIcon = toggler.querySelector('.toggle-icon');
-    toggler.classList.toggle('open');
 
     if (toggler.classList.contains('open')) {
       header.style.height = '20rem';
@@ -39,59 +64,181 @@ export const AirTableFormifier = {
       toggler.style.backgroundColor = '#97eaa2';
       toggleIcon.innerHTML = ' + ';
     }
+    return this;
   },
 
+  /**
+   * Style method for turning large instruction box to toggle
+   * @returns {UI}
+   */
+  clearInstructions() {
+    const formName = document.querySelector('.formName');
+    formName.insertAdjacentHTML('afterend', this.templates.instructions);
+
+    // Remove instruction block and assign toggle function
+    document.querySelector('.formDescription').style.display = 'none';
+    document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
+    return this;
+  },
+
+  /**
+   * Fixes formatting where descriptions are too long and screw up grid
+   */
   descriptionLimit() {
-    /* eslint no-param-reassign: ["error", { "props": false }] */
-    // Fixes formatting where descriptions are too long and screw up grid
-    return [...document.querySelectorAll('.description')].forEach((d) => {
-      d.textContent.length > 52 // eslint-disable-line no-unused-expressions
-        ? d.parentElement.style.display = 'block'
-        : null;
-    });
+    return [...document.querySelectorAll('.description')].forEach(d => // eslint-disable-line no-confusing-arrow
+      d.textContent.length > 52 ? d.parentElement.setAttribute('style', 'display:block;') : this);
   },
 
+  /**
+   * Remove random unnecessary elements that take up too much space on the original form
+   */
   removeUnwantedElements() {
     [document.querySelector('.formCoverImageContainer'),
       ...document.querySelectorAll('.createYourOwnFormWithAirtable')]
-      .forEach(el => el ? el.remove() : null); // eslint-disable-line no-confusing-arrow
+      .forEach(el => el ? el.remove() : this); // eslint-disable-line no-confusing-arrow
   },
 
-  createIframe(type, link) {
-    const iframe = document.createElement('iframe');
-    iframe.className = `iframe-stacked ${type}`;
-    iframe.src = link.startsWith('http') ? link : `http://${link}`;
-    return iframe;
+  /**
+   * Tail of promise creating stack for browsing tabs
+   * @param tab
+   * @param fn
+   * @returns {*}
+   */
+  createTabs(tab, fn) {
+    this.linkTabs.push(tab);
+    return fn();
   },
 
-  generateIframes(container) {
-    const _getType = n => n.closest('.sharedFormField').firstElementChild.textContent.split('Venue ')[1].trim();
+  /**
+   * Generates an iframe from given params
+   * @param type: Facebook, Instagram or Website of Venue
+   * @param href: URL
+   * @returns {Element}
+   */
+  createIframe({ type, href }) {
+    return ((iframe) => {
+      iframe.classList.add('iframe-stacked', type);
+      iframe.setAttribute('src',
+        href.startsWith('http') ? href : `http://${href}`);
+      return iframe;
+    })(document.createElement('iframe'));
+  },
 
-    [...document.querySelectorAll('.detailViewTextWithLinks a')].forEach((link, i) => {
-      if (i === 3) {
-        // May change in the future. For now this is the recurring event form link
-        return Object.defineProperty(AirTableFormifier, 'recurEventLink', { value: link.href });
+  /**
+   * Gathers the form links and calls filter on them
+   * @returns {Array.<*>}
+   */
+  getLinks() {
+    const getName = l => l.closest('.sharedFormField').firstElementChild.textContent.split('Venue ')[1].trim();
+
+    return Promise.all([...document.querySelectorAll('.sharedFormField .detailViewTextWithLinks a')]
+      .map((link) => {
+        if (link.href.includes('https://airtable.com')) {
+          // Side-Effect: Assign recurEventLink for formModal while already iterating links
+          return Object.defineProperty(UI, 'recurEventLink', { value: link.href });
+        }
+        return { type: getName(link), href: link.href };
+      }).filter(link => link.type));
+  },
+
+  /**
+   * Calls iframe DOM creation method and appends it to container
+   * @param container
+   * @param tab
+   */
+  generateIframes(container, tab) {
+    const callback = () => container.prepend(this.createIframe(tab));
+    return this.createTabs(tab, callback);
+  },
+
+  /**
+   * Retrieves available venue links from the form to create the iframe tabs
+   * @param container: iframe container
+   */
+  async buildVenueTabs(container) {
+    const tabs = await this.getLinks();
+    return tabs.forEach(tab => this.generateIframes(container, tab));
+  },
+
+  /**
+   * Adds 'active' class to selected tabs/iframes
+   * @param tabIframeSet: array of matching tab/iframe pairs
+   */
+  focusIframeTabSet(tabIframeSet) {
+    return [...tabIframeSet].forEach(el => el.classList.add('active'));
+  },
+
+  /**
+   * Iterates through tab/iframe pairs and controls focus
+   * @param tab: current tab in iteration
+   * @param iframe: current iframe in iteration
+   */
+  assignTabControls([tab, iframe]) {
+    return tab.addEventListener('click', (e) => {
+
+      const _target = e.target.classList.contains('tab') ? e.target : e.target.closest('.tab');
+      const _targetType = _target.classList[1];
+
+      if (!_target.classList.contains('active')) {
+
+        this.focusIframeTabSet([_target, iframe]);
+
+        [...document.querySelectorAll('.active')].forEach((node) => {
+          if (!node.classList.contains(_targetType)) {
+            node.classList.remove('active');
+          }
+        });
       }
-      return link.href ? container.prepend(this.createIframe(_getType(link), link.href)) : null;
+      return this;
     });
   },
 
-  setIframes() {
-    const formContainer = document.querySelector('.formFieldAndSubmitContainer');
-    const formHeader = document.querySelector('.formHeader');
+  /**
+   * Sets the relationship array pairs for tabs and their respective iframes
+   */
+  combineIframeTabEvents() {
+    return this.linkTabs.forEach((tab, i) => {
 
-    formContainer.prepend(formHeader);
-    formContainer.insertAdjacentHTML('afterend', this.templates.iframeContainer);
+      const tabIframeSet = [...document.querySelectorAll(`.${tab.type}:not(.tab-box)`)];
 
-    // Methods for dynamically generating links
-    return this.generateIframes(document.getElementById('iframeContainer'));
+      if (i === 0) {
+        // Focus the first frame as we iterate
+        UI.focusIframeTabSet(tabIframeSet);
+      } else if (i === 1) {
+        // FIXME: This is a hack for the reversed tab order. Really should be fixed in CSS
+        document.querySelector(`.tab.${tab.type}`).setAttribute('style', 'z-index: 1;');
+      }
+      return UI.assignTabControls(tabIframeSet);
+    });
   },
 
-  init() {
+  /**
+   * Starts the method chain to create/add iframes to UI
+   * @returns {*}
+   */
+  async setIframes() {
+    const formContainer = document.querySelector('.formFieldAndSubmitContainer');
+    const formHeader = document.querySelector('.formHeader');
+    formContainer.prepend(formHeader);
+    formContainer.insertAdjacentHTML('afterend', this.templates.iframeContainer);
+    const iframeContainer = document.getElementById('iframeContainer');
+
+    await this.buildVenueTabs(iframeContainer);
+    await iframeContainer.insertAdjacentHTML('afterbegin', this.templates.iframeNavigator(this.linkTabs));
+    return this.combineIframeTabEvents();
+  },
+
+  /**
+   * Initializes the Object/UI and calls the base methods for setup
+   * @returns {Promise.<UI>}
+   */
+  async init() {
     // DOM JS Methods need to wait shortly after window for load
-    this.clearInstructions();
-    this.descriptionLimit();
-    this.removeUnwantedElements();
-    this.setIframes();
+    await this.clearInstructions().toggleInstructions();
+    await this.descriptionLimit();
+    await this.removeUnwantedElements();
+    await this.setIframes();
+    return this;
   }
+
 };
