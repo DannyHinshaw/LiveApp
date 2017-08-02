@@ -44,11 +44,12 @@ export const AJAXListener = {
    */
   injectScript() {
     // Hack to listen for AirTable API calls to finish loading
-    return document.documentElement.appendChild(((elem, inner) => {
-      elem.setAttribute('type', 'text/javascript');
-      elem.appendChild(document.createTextNode(inner));
-      return elem;
-    })(document.createElement('script'), this._hijacker()));
+    return window.location.href.indexOf('?prefill_Venue%20ID') < 0 ? null :
+      document.documentElement.appendChild(((elem, inner) => {
+        elem.setAttribute('type', 'text/javascript');
+        elem.appendChild(document.createTextNode(inner));
+        return elem;
+      })(document.createElement('script'), this._hijacker()));
   },
 
   /**

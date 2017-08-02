@@ -52,6 +52,7 @@ export const UI = {
     const instructions = document.querySelector('.formDescription');
     const toggler = document.querySelector('.toggle-instructions');
     const toggleIcon = toggler.querySelector('.toggle-icon');
+    toggler.classList.toggle('open');
 
     if (toggler.classList.contains('open')) {
       header.style.height = '20rem';
@@ -77,7 +78,7 @@ export const UI = {
 
     // Remove instruction block and assign toggle function
     document.querySelector('.formDescription').style.display = 'none';
-    document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
+    document.querySelector('.toggle-instructions').addEventListener('click', this.toggleInstructions);
     return this;
   },
 
@@ -152,15 +153,6 @@ export const UI = {
   },
 
   /**
-   * Retrieves available venue links from the form to create the iframe tabs
-   * @param container: iframe container
-   */
-  async buildVenueTabs(container) {
-    const tabs = await this.getLinks();
-    return tabs.forEach(tab => this.generateIframes(container, tab));
-  },
-
-  /**
    * Adds 'active' class to selected tabs/iframes
    * @param tabIframeSet: array of matching tab/iframe pairs
    */
@@ -213,6 +205,15 @@ export const UI = {
   },
 
   /**
+   * Retrieves available venue links from the form to create the iframe tabs
+   * @param container: iframe container
+   */
+  async buildVenueTabs(container) {
+    const tabs = await this.getLinks();
+    return tabs.forEach(tab => this.generateIframes(container, tab));
+  },
+
+  /**
    * Starts the method chain to create/add iframes to UI
    * @returns {*}
    */
@@ -234,7 +235,7 @@ export const UI = {
    */
   async init() {
     // DOM JS Methods need to wait shortly after window for load
-    await this.clearInstructions().toggleInstructions();
+    await this.clearInstructions();
     await this.descriptionLimit();
     await this.removeUnwantedElements();
     await this.setIframes();
