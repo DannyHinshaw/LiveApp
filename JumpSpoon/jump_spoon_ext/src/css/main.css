@@ -168,3 +168,7 @@ iframe.active {
 	height: 1.25rem;
 	width: 1.25rem;
 }
+/* Google Translate Bullshit */
+#gt-c, #wtgbr {
+	display: none;
+}

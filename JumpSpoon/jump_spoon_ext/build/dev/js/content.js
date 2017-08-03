@@ -1177,19 +1177,23 @@ var waitForAJAX = function () {
             return __WEBPACK_IMPORTED_MODULE_3__modules_ajax_listener__["a" /* AJAXListener */].loadEvent();
 
           case 5:
+            _context.next = 7;
+            return window.removeEventListener('AirTableXHR::finished', __WEBPACK_IMPORTED_MODULE_3__modules_ajax_listener__["a" /* AJAXListener */].loadEvent, false);
+
+          case 7:
             return _context.abrupt('return', __WEBPACK_IMPORTED_MODULE_1_babel_runtime_core_js_object_create___default()(__WEBPACK_IMPORTED_MODULE_4__modules_airtable_formifier__["a" /* UI */]));
 
-          case 8:
-            _context.prev = 8;
+          case 10:
+            _context.prev = 10;
             _context.t0 = _context['catch'](0);
             return _context.abrupt('return', _context.t0);
 
-          case 11:
+          case 13:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, this, [[0, 8]]);
+    }, _callee, this, [[0, 10]]);
   }));
 
   return function waitForAJAX() {
@@ -1218,7 +1222,7 @@ var waitForAJAX = function () {
 // `handlers` parameter for good when invoking msg.init()
 console.log('LiveApp formifier running...');waitForAJAX().then(function (formifier) {
   return formifier.init();
-}).catch(console.log.bind(console));
+}).catch(console.log.bind(console)); // eslint-disable-line no-console
 
 /***/ }),
 /* 87 */
@@ -2547,9 +2551,10 @@ var AJAXListener = {
       function bindResponse(request, response) {
         request.__defineGetter__('responseText', function () {
           // eslint-disable-line no-restricted-properties, line
-          console.warn('AirTableXHR::Something tried to get the responseText'); // eslint-disable-line no-console
+          // console.warn('AirTableXHR::Something tried to get the responseText');
           console.debug(response); // eslint-disable-line no-console
-          return window.dispatchEvent(new CustomEvent('AirTableXHR::finished'));
+          window.dispatchEvent(new CustomEvent('AirTableXHR::finished'));
+          return response;
         });
       }
 
@@ -2581,6 +2586,7 @@ var AJAXListener = {
   injectScript: function injectScript() {
     // Hack to listen for AirTable API calls to finish loading
     return window.location.href.indexOf('?prefill_Venue%20ID') < 0 ? null : document.documentElement.appendChild(function (elem, inner) {
+      elem.setAttribute('id', 'delete');
       elem.setAttribute('type', 'text/javascript');
       elem.appendChild(document.createTextNode(inner));
       return elem;
@@ -2595,7 +2601,7 @@ var AJAXListener = {
   loadEvent: function loadEvent() {
     // TODO: Figure out how to completely remove eventListener
     return new __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_promise___default.a(function (resolve) {
-      return window.addEventListener('AirTableXHR::finished', resolve, { once: true }, true);
+      return window.addEventListener('AirTableXHR::finished', resolve);
     });
   }
 };
@@ -2729,6 +2735,23 @@ var UI = {
   },
 
 
+  /*
+    gTranslateScript() {
+      const scriptSrc = `(${(function() {
+        document.getElementById('wtgbr').remove();
+        document.getElementById('gt-c').remove();
+      }).toString()})();`;
+  
+      window.frames['Website'].document.getElementsByTagName('head')[0]
+        .appendChild(((elem, inner) => {
+          elem.setAttribute('iframe_script', 'text/javascript');
+          elem.setAttribute('type', 'text/javascript');
+          elem.appendChild(document.createTextNode(inner));
+          return elem;
+        })(document.createElement('script'), scriptSrc));
+  
+    },
+  */
   /**
    * Generates an iframe from given params
    * @param type: Facebook, Instagram or Website of Venue
@@ -2741,7 +2764,21 @@ var UI = {
 
     return function (iframe) {
       iframe.classList.add('iframe-stacked', type);
+      iframe.setAttribute('name', type);
       iframe.setAttribute('src', href.startsWith('http') ? href : 'http://' + href);
+      /*
+              (() => {
+                if (href.startsWith('http')) {
+                  if (href.startsWith('http://')) {
+                    return `https://translate.google.com/translate?sl=ja&tl=en&u=${href}`;
+                  } else {
+                    return href;
+                  }
+                } else {
+                  return `http://${href}`;
+                }
+              })());
+      */
       return iframe;
     }(document.createElement('iframe'));
   },

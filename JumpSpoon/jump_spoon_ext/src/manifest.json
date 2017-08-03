@@ -11,7 +11,7 @@
   },
   "background": { "scripts": ["js/background.js"] },
   "content_scripts": [{
-    "matches": [ "https://airtable.com/*" ],
+    "matches": [ "https://airtable.com/*", "https://translate.google.com/translate?sl=ja&tl=en&u=*" ],
     "js": [ "js/content.js" ],
     "css": [ "css/main.css" ]
   }],

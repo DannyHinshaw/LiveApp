@@ -15,9 +15,10 @@ export const AJAXListener = {
     return `(${(function() { // eslint-disable-line func-names
       function bindResponse(request, response) {
         request.__defineGetter__('responseText', () => { // eslint-disable-line no-restricted-properties, line
-          console.warn('AirTableXHR::Something tried to get the responseText'); // eslint-disable-line no-console
+          // console.warn('AirTableXHR::Something tried to get the responseText');
           console.debug(response); // eslint-disable-line no-console
-          return window.dispatchEvent(new CustomEvent('AirTableXHR::finished'));
+          window.dispatchEvent(new CustomEvent('AirTableXHR::finished'));
+          return response;
         });
       }
 
@@ -46,6 +47,7 @@ export const AJAXListener = {
     // Hack to listen for AirTable API calls to finish loading
     return window.location.href.indexOf('?prefill_Venue%20ID') < 0 ? null :
       document.documentElement.appendChild(((elem, inner) => {
+        elem.setAttribute('id', 'delete');
         elem.setAttribute('type', 'text/javascript');
         elem.appendChild(document.createTextNode(inner));
         return elem;
@@ -58,7 +60,6 @@ export const AJAXListener = {
    */
   loadEvent() {
     // TODO: Figure out how to completely remove eventListener
-    return new Promise(resolve =>
-      window.addEventListener('AirTableXHR::finished', resolve, { once: true }, true));
+    return new Promise((resolve) => window.addEventListener('AirTableXHR::finished', resolve));
   }
 };

@@ -110,6 +110,23 @@ export const UI = {
     return fn();
   },
 
+/*
+  gTranslateScript() {
+    const scriptSrc = `(${(function() {
+      document.getElementById('wtgbr').remove();
+      document.getElementById('gt-c').remove();
+    }).toString()})();`;
+
+    window.frames['Website'].document.getElementsByTagName('head')[0]
+      .appendChild(((elem, inner) => {
+        elem.setAttribute('iframe_script', 'text/javascript');
+        elem.setAttribute('type', 'text/javascript');
+        elem.appendChild(document.createTextNode(inner));
+        return elem;
+      })(document.createElement('script'), scriptSrc));
+
+  },
+*/
   /**
    * Generates an iframe from given params
    * @param type: Facebook, Instagram or Website of Venue
@@ -119,8 +136,21 @@ export const UI = {
   createIframe({ type, href }) {
     return ((iframe) => {
       iframe.classList.add('iframe-stacked', type);
-      iframe.setAttribute('src',
-        href.startsWith('http') ? href : `http://${href}`);
+      iframe.setAttribute('name', type);
+      iframe.setAttribute('src', href.startsWith('http') ? href : `http://${href}`);
+/*
+        (() => {
+          if (href.startsWith('http')) {
+            if (href.startsWith('http://')) {
+              return `https://translate.google.com/translate?sl=ja&tl=en&u=${href}`;
+            } else {
+              return href;
+            }
+          } else {
+            return `http://${href}`;
+          }
+        })());
+*/
       return iframe;
     })(document.createElement('iframe'));
   },
@@ -239,6 +269,8 @@ export const UI = {
     await this.descriptionLimit();
     await this.removeUnwantedElements();
     await this.setIframes();
+    // await this.gTranslateScript();
+
     return this;
   }
 

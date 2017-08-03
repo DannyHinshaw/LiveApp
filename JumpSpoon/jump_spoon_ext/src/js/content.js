@@ -25,15 +25,16 @@ async function waitForAJAX() {
   try {
     await AJAXListener.injectScript();
     await AJAXListener.loadEvent();
+    await window.removeEventListener('AirTableXHR::finished', AJAXListener.loadEvent, false);
     // Initialize settings
     // Prototypal object creation with object factory function
     return Object.create(UI);
   } catch (e) {
-    return e; // eslint-disable-line no-console
+    return e;
   }
 }
 
 // Initi
 waitForAJAX()
   .then(formifier => formifier.init())
-  .catch(console.log.bind(console));
+  .catch(console.log.bind(console)); // eslint-disable-line no-console
