@@ -5,6 +5,7 @@ module.exports = {
     background: './src/js/background',
     content: './src/js/content',
     devTools: './src/js/devTools',
+    gTranslate: './src/js/gTranslate',
     options: './src/js/options',
     popup: './src/js/popup'
   },

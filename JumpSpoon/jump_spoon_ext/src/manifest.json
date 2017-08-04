@@ -11,14 +11,25 @@
   },
   "background": { "scripts": ["js/background.js"] },
   "content_scripts": [{
-    "matches": [ "https://airtable.com/*", "https://translate.google.com/translate?sl=ja&tl=en&u=*" ],
-    "js": [ "js/content.js" ],
-    "css": [ "css/main.css" ]
+      "matches": [ "https://airtable.com/*" ],
+      "js": [ "js/content.js" ],
+      "css": [ "css/content.css" ],
+      "all_frames": true
+  }, {
+    "matches": [ "https://translate.google.com/translate?sl=ja&tl=en&u=*" ],
+    "js": [ "js/gTranslate.js" ],
+    "css": [ "css/gTranslate.css" ],
+    "all_frames": true
   }],
   "options_page": "html/options.html",
   "devtools_page": "html/devtools.html",
   "permissions": [
     "<all_urls>",
+    "http://*/",
+    "https://*/",
+    "activeTab",
+    "tabs",
+    "webNavigation",
     "webRequest",
     "webRequestBlocking"
   ],

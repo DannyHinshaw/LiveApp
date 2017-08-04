@@ -1,0 +1,7 @@
+/* Google Translate Bullshit */
+#contentframe {
+	top: 0px;
+}
+#google-infowindow, #gt-c, #wtgbr {
+	display: none;
+}

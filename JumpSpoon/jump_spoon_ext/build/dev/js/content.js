@@ -2765,20 +2765,18 @@ var UI = {
     return function (iframe) {
       iframe.classList.add('iframe-stacked', type);
       iframe.setAttribute('name', type);
-      iframe.setAttribute('src', href.startsWith('http') ? href : 'http://' + href);
-      /*
-              (() => {
-                if (href.startsWith('http')) {
-                  if (href.startsWith('http://')) {
-                    return `https://translate.google.com/translate?sl=ja&tl=en&u=${href}`;
-                  } else {
-                    return href;
-                  }
-                } else {
-                  return `http://${href}`;
-                }
-              })());
-      */
+      iframe.setAttribute('src', // href.startsWith('http') ? href : `http://${href}`);
+      function () {
+        if (href.startsWith('http')) {
+          if (href.startsWith('http://')) {
+            return 'https://translate.google.com/translate?sl=ja&tl=en&u=' + href;
+          } else {
+            return href;
+          }
+        } else {
+          return 'http://' + href;
+        }
+      }());
       return iframe;
     }(document.createElement('iframe'));
   },

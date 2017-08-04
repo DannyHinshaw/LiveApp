@@ -137,8 +137,7 @@ export const UI = {
     return ((iframe) => {
       iframe.classList.add('iframe-stacked', type);
       iframe.setAttribute('name', type);
-      iframe.setAttribute('src', href.startsWith('http') ? href : `http://${href}`);
-/*
+      iframe.setAttribute('src', // href.startsWith('http') ? href : `http://${href}`);
         (() => {
           if (href.startsWith('http')) {
             if (href.startsWith('http://')) {
@@ -150,7 +149,6 @@ export const UI = {
             return `http://${href}`;
           }
         })());
-*/
       return iframe;
     })(document.createElement('iframe'));
   },

@@ -61,3 +61,27 @@ chrome.webRequest.onHeadersReceived.addListener((details) => { // eslint-disable
     })
   };
 }, { urls: ['<all_urls>'] }, ['blocking', 'responseHeaders']);
+
+
+/*
+const filter = { url: [
+  { hostContains: 'google.com/translate?sl=ja&tl=en&u=' },
+  { hostPrefix: 'translate' }
+]};
+
+function logOnCommitted(details) {
+  console.log("target URL: " + details.url);
+  console.log("transition type: " + details.transitionType);
+  console.log("transition qualifiers: " + details.transitionQualifiers);
+  chrome.tabs.executeScript({ file: 'gTranslate.js', allFrames: true });
+}
+
+chrome.webNavigation.onCommitted.addListener(logOnCommitted, filter);
+*/
+
+
+/*
+chrome.tabs.query({active: true}, function(selectedTab) {
+  chrome.tabs.executeScript(selectedTab[0].id, {file: 'g_translate.js'});
+});
+*/
