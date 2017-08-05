@@ -74,45 +74,61 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 window.onload = function () {
-  console.log('window.onload::gTranslate running');
-
-  function locationHashChanged() {
-    console.log('PAGE CHANGED');
-  }
-
-  if (window.location.href.includes('translate.googleusercontent')) {
-    console.log(window.MutationObserver);
-
-    var gTranslateKill = function gTranslateKill() {
-      return '(' + function () {
-        // eslint-disable-line func-names
-        document.body.removeChild(document.getElementById('google-infowindow'));
-
-        function unwrap(wrapper) {
-          // place childNodes in document fragment
-          var docFrag = document.createDocumentFragment();
-          while (wrapper.firstChild) {
-            var child = wrapper.removeChild(wrapper.firstChild);
-            docFrag.appendChild(child);
-          }
-
-          // replace wrapper with document fragment
-          wrapper.parentNode.replaceChild(docFrag, wrapper);
+  /**
+   * Template string version of script to inject into the google translate page.
+   * Removes a whole bunch of different bullshit.
+   * @returns {string}
+   */
+  var gTranslateKill = function gTranslateKill() {
+    return '(' + function () {
+      // eslint-disable-line func-names
+      /**
+       * Removes unwanted wrapper elements and preserves the original child
+       * @param wrapper
+       * @returns {Node}
+       */
+      var unwrap = function unwrap(wrapper) {
+        // place childNodes in document fragment
+        var docFrag = document.createDocumentFragment();
+        while (wrapper.firstChild) {
+          var child = wrapper.removeChild(wrapper.firstChild);
+          docFrag.appendChild(child);
         }
+        // replace wrapper with document fragment
+        return wrapper.parentNode.replaceChild(docFrag, wrapper);
+      };
 
-        // Google wraps text/links with annoying garbage. Remove it and keep the wrapped el
-        [].forEach.call(document.querySelectorAll('.notranslate'), function (wrapper) {
-          return unwrap(wrapper);
-        });
-      }.toString() + ')();'; // eslint-disable-line func-names
-    };
+      // Google wraps text/links with annoying garbage. Remove it and keep the wrapped el
+      [].forEach.call(document.querySelectorAll('.notranslate'), function (wrapper) {
+        return unwrap(wrapper);
+      });
+    }.toString() + ')();'; // eslint-disable-line func-names
+  };
 
-    var injectScript = function injectScript() {
-      return Object(__WEBPACK_IMPORTED_MODULE_0__modules_script_injector__["a" /* scriptInjector */])(document.head || document.documentElement, gTranslateKill);
-    }; // eslint-disable-line max-len
-    injectScript();
-  }
+  // Function to inject our script string into the iframe
+  var injectScript = function injectScript() {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__modules_script_injector__["a" /* scriptInjector */])(document.head || document.documentElement, gTranslateKill);
+  }; // eslint-disable-line max-len
+
+  // Inject the script when the iframe initially loads
+  // if (window.location.href.includes('translate.googleusercontent')) {
+  // One of the main issue elements from g-translate. Remove it.
+  document.body.removeChild(document.getElementById('google-infowindow'));
+
+  injectScript();
+  // }
 };
+
+// TODO: What can I target for page navigation in gTranslate iframe?
+var mutationTarget = window.document;
+var observer = new MutationObserver(function (mutations) {
+  mutations.forEach(function (mutation) {
+    console.log(mutation);
+  });
+});
+// Config and start mutation observer
+var config = { attributes: true, childList: true, characterData: true, subtree: true };
+observer.observe(mutationTarget, config);
 
 /***/ }),
 
