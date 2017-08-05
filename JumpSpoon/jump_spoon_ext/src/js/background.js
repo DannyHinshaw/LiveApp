@@ -1,8 +1,7 @@
 /* eslint-env webextensions */
-/*
 import handlers from './modules/handlers';
 import msg from './modules/msg';
-*/
+
 
 // here we use SHARED message handlers, so all the contexts support the same
 // commands. in background, we extend the handlers with two special
@@ -14,21 +13,25 @@ import msg from './modules/msg';
 // cooperate with the rest of the extension via messaging system (you want to
 // know when new instance of given context is created / destroyed, or you want
 // to be able to issue command requests from this context), you may simply
-// omit the `hadnlers` parameter for good when invoking msg.init()
+// omit the `handlers` parameter for good when invoking msg.init()
 
 console.log('BACKGROUND SCRIPT WORKS!'); // eslint-disable-line no-console
 
 /**
  *  DEMO FOR MESSENGER
-/*
+*/
+
 // adding special background notification handlers onConnect / onDisconnect
 function logEvent(ev, context, tabId) {
   console.log(`${ev}: context = ${context}, tabId = ${tabId}`); // eslint-disable-line no-console
 }
 handlers.onConnect = logEvent.bind(null, 'onConnect');
 handlers.onDisconnect = logEvent.bind(null, 'onDisconnect');
-const message = msg.init('bg', handlers.create('bg'));
 
+const message = msg.init('bg');
+
+
+/*
 // issue `echo` command in 10 seconds after invoked,
 // schedule next run in 5 minutes
 function helloWorld() {
@@ -60,4 +63,9 @@ chrome.webRequest.onHeadersReceived.addListener((details) => { // eslint-disable
       return HEADERS_TO_STRIP_LOWERCASE.indexOf(header.name.toLowerCase()) < 0;
     })
   };
-}, { urls: ['<all_urls>'] }, ['blocking', 'responseHeaders'])
+}, { urls: ['<all_urls>'] }, ['blocking', 'responseHeaders']);
+
+// Listen for google 'SPRITE' requests
+chrome.webRequest.onBeforeRequest.addListener(() => {
+  return message.bcast(['ct'], 'g_translate_img_GET');
+}, { urls: ['http://www.google.com/images/*.gif'] });

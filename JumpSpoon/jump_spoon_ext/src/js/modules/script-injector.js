@@ -14,6 +14,7 @@ export const scriptInjector = (target, callback, { ...optId }) => { // eslint-di
   return target.appendChild(((elem, inner) => {
     elem.setAttribute('id', optId.id ? optId.id : callback.name);
     elem.setAttribute('type', 'text/javascript');
+    elem.setAttribute('defer', '');
     elem.appendChild(document.createTextNode(inner));
     return elem;
   })(document.createElement('script'), callback()));

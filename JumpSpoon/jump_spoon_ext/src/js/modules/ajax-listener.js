@@ -47,7 +47,7 @@ export const AJAXListener = {
   injectScript() {
     // Hack to listen for AirTable API calls to finish loading
     return window.location.href.indexOf('?prefill_Venue%20ID') < 0 ? null :
-      scriptInjector(document.documentElement, this._hijacker, { id: 'delete' });
+      scriptInjector(document.documentElement, this._hijacker, { id: 'AJAX_hj' });
   },
 
   /**
