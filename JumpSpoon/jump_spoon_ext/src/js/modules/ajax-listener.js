@@ -1,3 +1,4 @@
+import { scriptInjector } from './script-injector';
 /**
  * Inject a script to hijack the AirTable API calls
  * Fires a custom window event when calls resolve
@@ -46,12 +47,7 @@ export const AJAXListener = {
   injectScript() {
     // Hack to listen for AirTable API calls to finish loading
     return window.location.href.indexOf('?prefill_Venue%20ID') < 0 ? null :
-      document.documentElement.appendChild(((elem, inner) => {
-        elem.setAttribute('id', 'delete');
-        elem.setAttribute('type', 'text/javascript');
-        elem.appendChild(document.createTextNode(inner));
-        return elem;
-      })(document.createElement('script'), this._hijacker()));
+      scriptInjector(document.documentElement, this._hijacker, { id: 'delete' });
   },
 
   /**
@@ -60,6 +56,6 @@ export const AJAXListener = {
    */
   loadEvent() {
     // TODO: Figure out how to completely remove eventListener
-    return new Promise((resolve) => window.addEventListener('AirTableXHR::finished', resolve));
+    return new Promise(resolve => window.addEventListener('AirTableXHR::finished', resolve));
   }
 };

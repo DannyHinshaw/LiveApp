@@ -110,7 +110,7 @@ export const UI = {
     return fn();
   },
 
-/*
+  /*
   gTranslateScript() {
     const scriptSrc = `(${(function() {
       document.getElementById('wtgbr').remove();
@@ -126,7 +126,7 @@ export const UI = {
       })(document.createElement('script'), scriptSrc));
 
   },
-*/
+  */
   /**
    * Generates an iframe from given params
    * @param type: Facebook, Instagram or Website of Venue
@@ -142,12 +142,10 @@ export const UI = {
           if (href.startsWith('http')) {
             if (href.startsWith('http://')) {
               return `https://translate.google.com/translate?sl=ja&tl=en&u=${href}`;
-            } else {
-              return href;
             }
-          } else {
-            return `http://${href}`;
+            return href;
           }
+          return `http://${href}`;
         })());
       return iframe;
     })(document.createElement('iframe'));

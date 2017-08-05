@@ -16,7 +16,7 @@
       "css": [ "css/content.css" ],
       "all_frames": true
   }, {
-    "matches": [ "https://translate.google.com/translate?sl=ja&tl=en&u=*" ],
+    "matches": [ "https://translate.google.com/*", "https://translate.googleusercontent.com/*" ],
     "js": [ "js/gTranslate.js" ],
     "css": [ "css/gTranslate.css" ],
     "all_frames": true

@@ -2531,6 +2531,8 @@ module.exports = function(KEY){
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AJAXListener; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_promise__ = __webpack_require__(70);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_promise___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_promise__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__script_injector__ = __webpack_require__(119);
+
 
 /**
  * Inject a script to hijack the AirTable API calls
@@ -2585,12 +2587,7 @@ var AJAXListener = {
    */
   injectScript: function injectScript() {
     // Hack to listen for AirTable API calls to finish loading
-    return window.location.href.indexOf('?prefill_Venue%20ID') < 0 ? null : document.documentElement.appendChild(function (elem, inner) {
-      elem.setAttribute('id', 'delete');
-      elem.setAttribute('type', 'text/javascript');
-      elem.appendChild(document.createTextNode(inner));
-      return elem;
-    }(document.createElement('script'), this._hijacker()));
+    return window.location.href.indexOf('?prefill_Venue%20ID') < 0 ? null : Object(__WEBPACK_IMPORTED_MODULE_1__script_injector__["a" /* scriptInjector */])(document.documentElement, this._hijacker, { id: 'delete' });
   },
 
 
@@ -2736,21 +2733,19 @@ var UI = {
 
 
   /*
-    gTranslateScript() {
-      const scriptSrc = `(${(function() {
-        document.getElementById('wtgbr').remove();
-        document.getElementById('gt-c').remove();
-      }).toString()})();`;
-  
-      window.frames['Website'].document.getElementsByTagName('head')[0]
-        .appendChild(((elem, inner) => {
-          elem.setAttribute('iframe_script', 'text/javascript');
-          elem.setAttribute('type', 'text/javascript');
-          elem.appendChild(document.createTextNode(inner));
-          return elem;
-        })(document.createElement('script'), scriptSrc));
-  
-    },
+  gTranslateScript() {
+    const scriptSrc = `(${(function() {
+      document.getElementById('wtgbr').remove();
+      document.getElementById('gt-c').remove();
+    }).toString()})();`;
+     window.frames['Website'].document.getElementsByTagName('head')[0]
+      .appendChild(((elem, inner) => {
+        elem.setAttribute('iframe_script', 'text/javascript');
+        elem.setAttribute('type', 'text/javascript');
+        elem.appendChild(document.createTextNode(inner));
+        return elem;
+      })(document.createElement('script'), scriptSrc));
+   },
   */
   /**
    * Generates an iframe from given params
@@ -2770,12 +2765,10 @@ var UI = {
         if (href.startsWith('http')) {
           if (href.startsWith('http://')) {
             return 'https://translate.google.com/translate?sl=ja&tl=en&u=' + href;
-          } else {
-            return href;
           }
-        } else {
-          return 'http://' + href;
+          return href;
         }
+        return 'http://' + href;
       }());
       return iframe;
     }(document.createElement('iframe'));
@@ -3200,6 +3193,65 @@ var $defineProperty = __webpack_require__(5)
 module.exports = function(object, index, value){
   if(index in object)$defineProperty.f(object, index, createDesc(0, value));
   else object[index] = value;
+};
+
+/***/ }),
+/* 115 */,
+/* 116 */,
+/* 117 */,
+/* 118 */,
+/* 119 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return scriptInjector; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties__ = __webpack_require__(120);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties__);
+
+/**
+ * Utility function for dynamically injecting scripts into iframe
+ * @param target: Target node to append script e.g. (document.head || document.documentElement)
+ * @param callback: Function variable that returns the script from template
+ *        callback example:
+ *          const func = () => `(${(function() {
+ *                                    console.log('script stuffs')
+ *                               }).toString()})();`;
+ * @param optId: HTML id attribute for script tag (optional, default is callback.name)
+ *        optId format: { id: 'scriptIdString'}
+ * @returns {Node|XML}: The actual built script element
+ */
+var scriptInjector = function scriptInjector(target, callback, _ref) {
+  var optId = __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties___default()(_ref, []);
+
+  // eslint-disable-line arrow-body-style, max-len
+  return target.appendChild(function (elem, inner) {
+    elem.setAttribute('id', optId.id ? optId.id : callback.name);
+    elem.setAttribute('type', 'text/javascript');
+    elem.appendChild(document.createTextNode(inner));
+    return elem;
+  }(document.createElement('script'), callback()));
+};
+
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+exports.default = function (obj, keys) {
+  var target = {};
+
+  for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+    target[i] = obj[i];
+  }
+
+  return target;
 };
 
 /***/ })

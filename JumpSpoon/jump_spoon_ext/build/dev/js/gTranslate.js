@@ -66,16 +66,109 @@
 /******/ ({
 
 /***/ 116:
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_script_injector__ = __webpack_require__(119);
+
 
 window.onload = function () {
-  console.log('gTranslate running');
+  console.log('window.onload::gTranslate running');
 
-  var frame = document.getElementById('contentframe');
-  frame.setAttribute('style', 'top: 0;');
-  // const sprites = document.getElementById('google-infowindow');
-  // sprites.parentNode.removeChild(sprites);
-  console.log(document.querySelectorAll('.logo-img'));
+  function locationHashChanged() {
+    console.log('PAGE CHANGED');
+  }
+
+  if (window.location.href.includes('translate.googleusercontent')) {
+    console.log(window.MutationObserver);
+
+    var gTranslateKill = function gTranslateKill() {
+      return '(' + function () {
+        // eslint-disable-line func-names
+        document.body.removeChild(document.getElementById('google-infowindow'));
+
+        function unwrap(wrapper) {
+          // place childNodes in document fragment
+          var docFrag = document.createDocumentFragment();
+          while (wrapper.firstChild) {
+            var child = wrapper.removeChild(wrapper.firstChild);
+            docFrag.appendChild(child);
+          }
+
+          // replace wrapper with document fragment
+          wrapper.parentNode.replaceChild(docFrag, wrapper);
+        }
+
+        // Google wraps text/links with annoying garbage. Remove it and keep the wrapped el
+        [].forEach.call(document.querySelectorAll('.notranslate'), function (wrapper) {
+          return unwrap(wrapper);
+        });
+      }.toString() + ')();'; // eslint-disable-line func-names
+    };
+
+    var injectScript = function injectScript() {
+      return Object(__WEBPACK_IMPORTED_MODULE_0__modules_script_injector__["a" /* scriptInjector */])(document.head || document.documentElement, gTranslateKill);
+    }; // eslint-disable-line max-len
+    injectScript();
+  }
+};
+
+/***/ }),
+
+/***/ 119:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return scriptInjector; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties__ = __webpack_require__(120);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties__);
+
+/**
+ * Utility function for dynamically injecting scripts into iframe
+ * @param target: Target node to append script e.g. (document.head || document.documentElement)
+ * @param callback: Function variable that returns the script from template
+ *        callback example:
+ *          const func = () => `(${(function() {
+ *                                    console.log('script stuffs')
+ *                               }).toString()})();`;
+ * @param optId: HTML id attribute for script tag (optional, default is callback.name)
+ *        optId format: { id: 'scriptIdString'}
+ * @returns {Node|XML}: The actual built script element
+ */
+var scriptInjector = function scriptInjector(target, callback, _ref) {
+  var optId = __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties___default()(_ref, []);
+
+  // eslint-disable-line arrow-body-style, max-len
+  return target.appendChild(function (elem, inner) {
+    elem.setAttribute('id', optId.id ? optId.id : callback.name);
+    elem.setAttribute('type', 'text/javascript');
+    elem.appendChild(document.createTextNode(inner));
+    return elem;
+  }(document.createElement('script'), callback()));
+};
+
+
+/***/ }),
+
+/***/ 120:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+exports.default = function (obj, keys) {
+  var target = {};
+
+  for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+    target[i] = obj[i];
+  }
+
+  return target;
 };
 
 /***/ })
