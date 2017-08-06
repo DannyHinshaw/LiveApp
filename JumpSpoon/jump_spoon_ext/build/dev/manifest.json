@@ -2,24 +2,39 @@
   "manifest_version": 2,
   "icons": { "128": "images/icon.png" },
   "browser_action": {
-    "default_icon": "images/icon.png",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    },
     "default_popup": "html/popup.html"
   },
   "background": { "scripts": ["js/background.js"] },
   "content_scripts": [{
-    "matches": [ "https://airtable.com/*?prefill_Venue%20ID=*" ],
-    "js": [ "js/content.js" ],
-    "css": [ "css/main.css" ]
+      "matches": [ "https://airtable.com/*" ],
+      "js": [ "js/content.js" ],
+      "css": [ "css/content.css" ],
+      "all_frames": true
+  }, {
+    "matches": [ "https://translate.google.com/*", "https://translate.googleusercontent.com/*" ],
+    "js": [ "js/gTranslate.js" ],
+    "css": [ "css/gTranslate.css" ],
+    "all_frames": true
   }],
   "options_page": "html/options.html",
   "devtools_page": "html/devtools.html",
   "permissions": [
     "<all_urls>",
+    "http://*/",
+    "https://*/",
+    "activeTab",
+    "tabs",
+    "webNavigation",
     "webRequest",
     "webRequestBlocking"
   ],
   "web_accessible_resources": [ "js/*", "html/*", "css/*", "images/*" ],
   "name": "jump_spoon",
-  "version": "0.3.0",
+  "version": "1.1.1",
   "description": "Chrome extension for LiveApp data collection &#39;Jump and Spoon&#39; workers."
 }

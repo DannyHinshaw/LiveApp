@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 117);
+/******/ 	return __webpack_require__(__webpack_require__.s = 118);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1873,58 +1873,7 @@ function installUnitTestMethods(target, delegate) {
 });
 
 /***/ }),
-/* 55 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// create handler module for given `context`.
-// handles `random`, `randomAsync`, and `echo` commands.
-// both `random` function log the invocation information to console and return
-// random number 0 - 999. `randomAsync` returns the value with 15 second delay.
-// `echo` function doesn't return anything, just logs the input parameter
-// `what`.
-
-function log() {
-  var _console;
-
-  (_console = console).log.apply(_console, arguments); // eslint-disable-line no-console
-}
-
-var handlers = {};
-
-handlers.create = function (context) {
-  return {
-    random: function random(done) {
-      log('--->' + context + '::random() invoked');
-      var r = Math.floor(1000 * Math.random());
-      log('<--- returns: ' + r);
-      done(r);
-    },
-    randomAsync: function randomAsync(done) {
-      log('--->' + context + '::randomAsync() invoked (15 sec delay)');
-      setTimeout(function () {
-        var r = Math.floor(1000 * Math.random());
-        log('<--- returns: ' + r);
-        done(r);
-      }, 15 * 1000);
-    },
-    echo: function echo(what, done) {
-      log('---> ' + context + '::echo("' + what + '") invoked');
-      log('<--- (no return value)');
-      done();
-    }
-  };
-};
-
-// for surpressing console.log output in unit tests:
-handlers.__resetLog = function () {
-  // eslint-disable-line no-underscore-dangle
-  log = function log() {}; // eslint-disable-line no-func-assign
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (handlers);
-
-/***/ }),
+/* 55 */,
 /* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2387,8 +2336,63 @@ __webpack_require__(30)('observable');
 /* 70 */,
 /* 71 */,
 /* 72 */,
-/* 73 */,
-/* 74 */,
+/* 73 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return scriptInjector; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties__);
+
+/**
+ * Utility function for dynamically injecting scripts into iframe
+ * @param target: Target node to append script e.g. (document.head || document.documentElement)
+ * @param callback: Function variable that returns the script from template
+ *        callback example:
+ *          const func = () => `(${(function() {
+ *                                    console.log('script stuffs')
+ *                               }).toString()})();`;
+ * @param optId: HTML id attribute for script tag (optional, default is callback.name)
+ *        optId format: { id: 'scriptIdString'}
+ * @returns {Node|XML}: The actual built script element
+ */
+var scriptInjector = function scriptInjector(target, callback, _ref) {
+  var optId = __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_objectWithoutProperties___default()(_ref, []);
+
+  // eslint-disable-line arrow-body-style, max-len
+  return target.appendChild(function (elem, inner) {
+    elem.setAttribute('defer', '');
+    elem.setAttribute('id', optId.id ? optId.id : callback.name);
+    elem.setAttribute('referrerPolicy', 'unsafe-url');
+    elem.setAttribute('type', 'text/javascript');
+    elem.appendChild(document.createTextNode(inner));
+    return elem;
+  }(document.createElement('script'), callback()));
+};
+
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+exports.default = function (obj, keys) {
+  var target = {};
+
+  for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+    target[i] = obj[i];
+  }
+
+  return target;
+};
+
+/***/ }),
 /* 75 */,
 /* 76 */,
 /* 77 */,
@@ -2431,29 +2435,138 @@ __webpack_require__(30)('observable');
 /* 114 */,
 /* 115 */,
 /* 116 */,
-/* 117 */
+/* 117 */,
+/* 118 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_handlers__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modules_script_injector__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modules_msg__ = __webpack_require__(54);
 
 
 
-// here we use SHARED message handlers, so all the contexts support the same
-// commands. but this is NOT typical messaging system usage, since you usually
-// want each context to handle different commands. for this you don't need
-// handlers factory as used below. simply create individual `handlers` object
-// for each context and pass it to msg.init() call. in case you don't need the
-// context to support any commands, but want the context to cooperate with the
-// rest of the extension via messaging system (you want to know when new
-// instance of given context is created / destroyed, or you want to be able to
-// issue command requests from this context), you may simply omit the
-// `handlers` parameter for good when invoking msg.init()
+// Flexible document reference for iframes to be used throughout the script
+var iframeBody = document.documentElement ? document.documentElement : document.body;
 
-__WEBPACK_IMPORTED_MODULE_1__modules_msg__["a" /* default */].init('dt', __WEBPACK_IMPORTED_MODULE_0__modules_handlers__["a" /* default */].create('dt'));
+/**
+ * Helper function for unwrapping children from their parents, and removing the parent
+ * @param wrapper
+ * @returns {Node}
+ */
+var unwrap = function unwrap(wrapper) {
+  // place childNodes in document fragment
+  var docFrag = document.createDocumentFragment();
+  while (wrapper.firstChild) {
+    var child = wrapper.removeChild(wrapper.firstChild);
+    docFrag.appendChild(child);
+  }
+  // replace wrapper with document fragment
+  return wrapper.parentNode.replaceChild(docFrag, wrapper);
+};
+
+// gTranslate wraps textNodes in 'SPRITE' highlighting divs. Here we attempt to remove them all
+var spriteUnwrapper = function spriteUnwrapper() {
+  return [].forEach.call(iframeBody.querySelectorAll('[class^=SPRITE]'), function (wrapper) {
+    return unwrap(wrapper);
+  });
+};
+
+// gTranslate makes requests occassionally to certain images, we can leverage this
+// in cases where the script was unable to completely remove the gTranslate CSS garbage
+__WEBPACK_IMPORTED_MODULE_1__modules_msg__["a" /* default */].init('ct', { g_translate_img_GET: function g_translate_img_GET() {
+    return spriteUnwrapper();
+  } });
+
+/**
+ * MAIN FUNCTION
+ * Once the window loads we build a custom script and inject it into all gTranslate iframes
+ */
+window.onload = function () {
+  /**
+   * Template string version of script to inject into the google translate page.
+   * Removes a whole bunch of different bullshit.
+   * @returns {string}
+   */
+  var gTranslateKill = function gTranslateKill() {
+    return '(' + function () {
+      // eslint-disable-line func-names
+
+      // Need a localized version of the global 'unwrap' function
+      // Technically we are right now inside a string element. Scope is iframe
+      var unwrap = function unwrap(wrapper) {
+        // place childNodes in document fragment
+        var docFrag = document.createDocumentFragment();
+        while (wrapper.firstChild) {
+          var child = wrapper.removeChild(wrapper.firstChild);
+          docFrag.appendChild(child);
+        }
+        // replace wrapper with document fragment
+        return wrapper.parentNode.replaceChild(docFrag, wrapper);
+      };
+
+      // Google wraps text/links with annoying garbage. Remove it and keep the wrapped el
+      [].forEach.call(document.querySelectorAll('.notranslate'), function (wrapper) {
+        return unwrap(wrapper);
+      });
+    }.toString() + ')();'; // eslint-disable-line func-names
+  };
+
+  // One of the main issue elements from g-translate. Remove it.
+  if (iframeBody.querySelector('#google-infowindow')) {
+    var infoWinParent = iframeBody.querySelector('#google-infowindow').parentNode;
+    infoWinParent.removeChild(document.querySelector('#google-infowindow'));
+  }
+
+  // Setup MutationObserver as fail-safe, google be tricky yo
+  var loaded = false;
+  var mutationTarget = iframeBody.querySelector('div.gmnoprint');
+
+  /**
+   * Create a Mutation observer for known gTranslate elements that producs garbage
+   * @returns {boolean}
+   */
+  var observeGT = function observeGT() {
+    if (mutationTarget) {
+      var observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function () {
+          return spriteUnwrapper();
+        });
+      });
+
+      // Config and start mutation observer
+      var config = {
+        attributes: true,
+        childList: true,
+        characterData: true,
+        subtree: true
+      };
+      // Init observer
+      observer.observe(mutationTarget, config);
+    } else if (!loaded) {
+      // If target isn't found the first time,
+      // try again after short delay (instead of nested mutationObservers... for now)
+      setTimeout(function () {
+        return observeGT();
+      }, 500);
+      loaded = true;
+      return loaded;
+    }
+    return false;
+  };
+
+  // Call the MutationObserver function
+  observeGT();
+
+  // Function to inject our script string into the iframe
+  var injectScript = function injectScript() {
+    return Object(__WEBPACK_IMPORTED_MODULE_0__modules_script_injector__["a" /* scriptInjector */])(document.body || document.documentElement, gTranslateKill);
+  }; // eslint-disable-line max-len
+
+  // Inject the script when the iframe initially loads
+  injectScript();
+};
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=devTools.js.map
+//# sourceMappingURL=gTranslate.js.map

@@ -52,6 +52,7 @@ export const UI = {
     const instructions = document.querySelector('.formDescription');
     const toggler = document.querySelector('.toggle-instructions');
     const toggleIcon = toggler.querySelector('.toggle-icon');
+    toggler.classList.toggle('open');
 
     if (toggler.classList.contains('open')) {
       header.style.height = '20rem';
@@ -77,7 +78,7 @@ export const UI = {
 
     // Remove instruction block and assign toggle function
     document.querySelector('.formDescription').style.display = 'none';
-    document.querySelector('.toggle-instructions').onclick = this.toggleInstructions;
+    document.querySelector('.toggle-instructions').addEventListener('click', this.toggleInstructions);
     return this;
   },
 
@@ -109,6 +110,23 @@ export const UI = {
     return fn();
   },
 
+  /*
+  gTranslateScript() {
+    const scriptSrc = `(${(function() {
+      document.getElementById('wtgbr').remove();
+      document.getElementById('gt-c').remove();
+    }).toString()})();`;
+
+    window.frames['Website'].document.getElementsByTagName('head')[0]
+      .appendChild(((elem, inner) => {
+        elem.setAttribute('iframe_script', 'text/javascript');
+        elem.setAttribute('type', 'text/javascript');
+        elem.appendChild(document.createTextNode(inner));
+        return elem;
+      })(document.createElement('script'), scriptSrc));
+
+  },
+  */
   /**
    * Generates an iframe from given params
    * @param type: Facebook, Instagram or Website of Venue
@@ -118,8 +136,17 @@ export const UI = {
   createIframe({ type, href }) {
     return ((iframe) => {
       iframe.classList.add('iframe-stacked', type);
-      iframe.setAttribute('src',
-        href.startsWith('http') ? href : `http://${href}`);
+      iframe.setAttribute('name', type);
+      iframe.setAttribute('src', // href.startsWith('http') ? href : `http://${href}`);
+        (() => {
+          if (href.startsWith('http')) {
+            if (href.startsWith('http://')) {
+              return `https://translate.google.com/translate?sl=ja&tl=en&u=${href}`;
+            }
+            return href;
+          }
+          return `http://${href}`;
+        })());
       return iframe;
     })(document.createElement('iframe'));
   },
@@ -149,15 +176,6 @@ export const UI = {
   generateIframes(container, tab) {
     const callback = () => container.prepend(this.createIframe(tab));
     return this.createTabs(tab, callback);
-  },
-
-  /**
-   * Retrieves available venue links from the form to create the iframe tabs
-   * @param container: iframe container
-   */
-  async buildVenueTabs(container) {
-    const tabs = await this.getLinks();
-    return tabs.forEach(tab => this.generateIframes(container, tab));
   },
 
   /**
@@ -213,6 +231,15 @@ export const UI = {
   },
 
   /**
+   * Retrieves available venue links from the form to create the iframe tabs
+   * @param container: iframe container
+   */
+  async buildVenueTabs(container) {
+    const tabs = await this.getLinks();
+    return tabs.forEach(tab => this.generateIframes(container, tab));
+  },
+
+  /**
    * Starts the method chain to create/add iframes to UI
    * @returns {*}
    */
@@ -234,10 +261,12 @@ export const UI = {
    */
   async init() {
     // DOM JS Methods need to wait shortly after window for load
-    await this.clearInstructions().toggleInstructions();
+    await this.clearInstructions();
     await this.descriptionLimit();
     await this.removeUnwantedElements();
     await this.setIframes();
+    // await this.gTranslateScript();
+
     return this;
   }
 

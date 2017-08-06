@@ -1,8 +1,7 @@
 /* eslint-env webextensions */
-/*
 import handlers from './modules/handlers';
 import msg from './modules/msg';
-*/
+
 
 // here we use SHARED message handlers, so all the contexts support the same
 // commands. in background, we extend the handlers with two special
@@ -14,21 +13,25 @@ import msg from './modules/msg';
 // cooperate with the rest of the extension via messaging system (you want to
 // know when new instance of given context is created / destroyed, or you want
 // to be able to issue command requests from this context), you may simply
-// omit the `hadnlers` parameter for good when invoking msg.init()
+// omit the `handlers` parameter for good when invoking msg.init()
 
 console.log('BACKGROUND SCRIPT WORKS!'); // eslint-disable-line no-console
 
 /**
  *  DEMO FOR MESSENGER
-/*
+*/
+
 // adding special background notification handlers onConnect / onDisconnect
 function logEvent(ev, context, tabId) {
   console.log(`${ev}: context = ${context}, tabId = ${tabId}`); // eslint-disable-line no-console
 }
 handlers.onConnect = logEvent.bind(null, 'onConnect');
 handlers.onDisconnect = logEvent.bind(null, 'onDisconnect');
-const message = msg.init('bg', handlers.create('bg'));
 
+const message = msg.init('bg');
+
+
+/*
 // issue `echo` command in 10 seconds after invoked,
 // schedule next run in 5 minutes
 function helloWorld() {
@@ -53,6 +56,32 @@ const HEADERS_TO_STRIP_LOWERCASE = [
   'x-xss-protection'
 ];
 
+// Used to determine if formifier modified the url to google translate http/hack
+const urlTranslateMod = 'https://translate.google.com/translate?sl=ja&tl=en&u=';
+
+// Always try HTTPS first
+chrome.webRequest.onBeforeRequest.addListener((details) => {
+  console.log(details.url);
+
+  const url = details.url.startsWith(urlTranslateMod) ?
+    details.url.split(urlTranslateMod)[1] : details.url;
+  console.log(url);
+/*
+  if (!details.url.startsWith('http://time.com/')) {
+    return {redirectUrl: 'http://time.com'};
+  }
+*/
+}, {
+  urls: ['<all_urls>'],
+  types: ['main_frame', 'sub_frame'],
+}, [ 'blocking' ]);
+
+// Listen for google 'SPRITE' requests
+chrome.webRequest.onBeforeRequest.addListener(() => {
+  return message.bcast(['ct'], 'g_translate_img_GET');
+}, { urls: ['http://www.google.com/images/*.gif'] });
+
+// CORS Support for iframes and XHR's
 chrome.webRequest.onHeadersReceived.addListener((details) => { // eslint-disable-line arrow-body-style, max-len
   return {
     responseHeaders: details.responseHeaders.filter((header) => { // eslint-disable-line arrow-body-style, max-len
@@ -60,12 +89,3 @@ chrome.webRequest.onHeadersReceived.addListener((details) => { // eslint-disable
     })
   };
 }, { urls: ['<all_urls>'] }, ['blocking', 'responseHeaders']);
-
-// Used to let content script know when to call init() method (seems to have no effect))
-/*
-chrome.webRequest.onCompleted.addListener((details) => {
-  /* Process the XHR response *//*
-  logEvent.bind(null, details);
-
-}, { urls: ['<all_urls>'] });
-*/

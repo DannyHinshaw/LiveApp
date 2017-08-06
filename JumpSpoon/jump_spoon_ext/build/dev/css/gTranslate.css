@@ -1,0 +1,18 @@
+/* Google Translate Bullshit */
+#contentframe {
+	top: 0px !important;
+}
+#google-infowindow *, .gmnoprint * , #gt-c, #wtgbr {
+	display: none !important;
+}
+.goog-tooltip {
+	display: none !important;
+}
+.goog-tooltip:hover {
+	display: none !important;
+}
+.goog-text-highlight {
+	background-color: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+}

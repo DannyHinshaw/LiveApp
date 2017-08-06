@@ -22,11 +22,19 @@ console.log('LiveApp formifier running...'); // eslint-disable-line no-console
 
 // Wait for AirTable to finish various AJAX calls
 async function waitForAJAX() {
-  await AJAXListener.injectScript();
-  await AJAXListener.loadEvent();
-  // Initialize settings
-  // Prototypal object creation with object factory function
-  return Object.create(UI);
+  try {
+    await AJAXListener.injectScript();
+    await AJAXListener.loadEvent();
+    await window.removeEventListener('AirTableXHR::finished', AJAXListener.loadEvent, false);
+    // Initialize settings
+    // Prototypal object creation with object factory function
+    return Object.create(UI);
+  } catch (e) {
+    return e;
+  }
 }
 
-waitForAJAX().then(formifier => formifier.init());
+// Initi
+waitForAJAX()
+  .then(formifier => formifier.init())
+  .catch(console.log.bind(console)); // eslint-disable-line no-console

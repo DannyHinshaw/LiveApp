@@ -1,3 +1,4 @@
+import { scriptInjector } from './script-injector';
 /**
  * Inject a script to hijack the AirTable API calls
  * Fires a custom window event when calls resolve
@@ -15,9 +16,10 @@ export const AJAXListener = {
     return `(${(function() { // eslint-disable-line func-names
       function bindResponse(request, response) {
         request.__defineGetter__('responseText', () => { // eslint-disable-line no-restricted-properties, line
-          console.warn('AirTableXHR::Something tried to get the responseText'); // eslint-disable-line no-console
+          // console.warn('AirTableXHR::Something tried to get the responseText');
           console.debug(response); // eslint-disable-line no-console
-          return window.dispatchEvent(new CustomEvent('AirTableXHR::finished'));
+          window.dispatchEvent(new CustomEvent('AirTableXHR::finished'));
+          return response;
         });
       }
 
@@ -44,11 +46,8 @@ export const AJAXListener = {
    */
   injectScript() {
     // Hack to listen for AirTable API calls to finish loading
-    return document.documentElement.appendChild(((elem, inner) => {
-      elem.setAttribute('type', 'text/javascript');
-      elem.appendChild(document.createTextNode(inner));
-      return elem;
-    })(document.createElement('script'), this._hijacker()));
+    return window.location.href.indexOf('?prefill_Venue%20ID') < 0 ? null :
+      scriptInjector(document.documentElement, this._hijacker, { id: 'AJAX_hj' });
   },
 
   /**
@@ -57,7 +56,6 @@ export const AJAXListener = {
    */
   loadEvent() {
     // TODO: Figure out how to completely remove eventListener
-    return new Promise(resolve =>
-      window.addEventListener('AirTableXHR::finished', resolve, { once: true }, true));
+    return new Promise(resolve => window.addEventListener('AirTableXHR::finished', resolve));
   }
 };
