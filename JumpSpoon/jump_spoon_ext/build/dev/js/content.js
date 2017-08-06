@@ -943,9 +943,10 @@ var scriptInjector = function scriptInjector(target, callback, _ref) {
 
   // eslint-disable-line arrow-body-style, max-len
   return target.appendChild(function (elem, inner) {
-    elem.setAttribute('id', optId.id ? optId.id : callback.name);
-    elem.setAttribute('type', 'text/javascript');
     elem.setAttribute('defer', '');
+    elem.setAttribute('id', optId.id ? optId.id : callback.name);
+    elem.setAttribute('referrerPolicy', 'unsafe-url');
+    elem.setAttribute('type', 'text/javascript');
     elem.appendChild(document.createTextNode(inner));
     return elem;
   }(document.createElement('script'), callback()));

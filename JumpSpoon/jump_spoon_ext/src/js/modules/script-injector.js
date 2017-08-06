@@ -12,9 +12,10 @@
  */
 export const scriptInjector = (target, callback, { ...optId }) => { // eslint-disable-line arrow-body-style, max-len
   return target.appendChild(((elem, inner) => {
-    elem.setAttribute('id', optId.id ? optId.id : callback.name);
-    elem.setAttribute('type', 'text/javascript');
     elem.setAttribute('defer', '');
+    elem.setAttribute('id', optId.id ? optId.id : callback.name);
+    elem.setAttribute('referrerPolicy', 'unsafe-url');
+    elem.setAttribute('type', 'text/javascript');
     elem.appendChild(document.createTextNode(inner));
     return elem;
   })(document.createElement('script'), callback()));

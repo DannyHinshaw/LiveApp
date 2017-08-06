@@ -56,6 +56,31 @@ const HEADERS_TO_STRIP_LOWERCASE = [
   'x-xss-protection'
 ];
 
+// Used to determine if formifier modified the url to google translate http/hack
+const urlTranslateMod = 'https://translate.google.com/translate?sl=ja&tl=en&u=';
+
+// Always try HTTPS first
+chrome.webRequest.onBeforeRequest.addListener((details) => {
+  console.log(details.url);
+
+  const url = details.url.startsWith(urlTranslateMod) ?
+    details.url.split(urlTranslateMod)[1] : details.url;
+  console.log(url);
+/*
+  if (!details.url.startsWith('http://time.com/')) {
+    return {redirectUrl: 'http://time.com'};
+  }
+*/
+}, {
+  urls: ['<all_urls>'],
+  types: ['main_frame', 'sub_frame'],
+}, [ 'blocking' ]);
+
+// Listen for google 'SPRITE' requests
+chrome.webRequest.onBeforeRequest.addListener(() => {
+  return message.bcast(['ct'], 'g_translate_img_GET');
+}, { urls: ['http://www.google.com/images/*.gif'] });
+
 // CORS Support for iframes and XHR's
 chrome.webRequest.onHeadersReceived.addListener((details) => { // eslint-disable-line arrow-body-style, max-len
   return {
@@ -64,8 +89,3 @@ chrome.webRequest.onHeadersReceived.addListener((details) => { // eslint-disable
     })
   };
 }, { urls: ['<all_urls>'] }, ['blocking', 'responseHeaders']);
-
-// Listen for google 'SPRITE' requests
-chrome.webRequest.onBeforeRequest.addListener(() => {
-  return message.bcast(['ct'], 'g_translate_img_GET');
-}, { urls: ['http://www.google.com/images/*.gif'] });
